@@ -49,7 +49,13 @@ import {
     setAuthToken,
     setAuthUser,
     logout,
+    loadUsers,
+    renderAdminTable,
+    getIsAdmin,
+    setIsAdmin,
 } from "./src/index.js";
+
+const adminSection = document.getElementById("admin-section");
 
 function restoreSession() {
     const savedToken = localStorage.getItem("authToken");
@@ -58,12 +64,27 @@ function restoreSession() {
         setAuthToken(savedToken);
         const user = JSON.parse(savedUser);
         setCurrentUser(user);
+        if (user.role === "admin") {
+            setIsAdmin(true);
+        }
         loginSection.classList.add("hidden");
         showUserInfo(user);
         showMessage(`Bienvenido de nuevo, ${user.name}`);
         return true;
     }
     return false;
+}
+
+async function loadAdminPanel() {
+    if (getIsAdmin()) {
+        try {
+            const users = await loadUsers();
+            renderAdminTable(users);
+            adminSection.classList.remove("hidden");
+        } catch (error) {
+            showErrorMessage("Error al cargar panel de administración");
+        }
+    }
 }
 
 function showAppContent() {
@@ -79,6 +100,7 @@ function hideAppContent() {
 if (restoreSession()) {
     showAppContent();
     toggleTaskForm(false);
+    loadAdminPanel();
 } else {
     hideAppContent();
 }
@@ -105,6 +127,7 @@ btnLogin.addEventListener("click", async () => {
         showAppContent();
         toggleTaskForm(false);
         showMessage(`Bienvenido, ${user.name}`);
+        loadAdminPanel();
     } catch (error) {
         setTextContent(loginError, error.message);
         showErrorMessage(error.message);

@@ -723,7 +723,95 @@ SECCIÓN DE ORDEN DE TAREAS
 }
 
 @media (max-width: 480px) {
-    #notifications-container {
+/* ============================================
+   ADMIN TABLE
+   ============================================ */
+
+.admin-section {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: var(--spacing-2xl);
+    overflow-x: auto;
+}
+
+.admin-table-container {
+    overflow-x: auto;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--font-size-sm);
+}
+
+.admin-table thead {
+    background-color: var(--color-gray-100);
+}
+
+.admin-table th {
+    padding: var(--spacing-md);
+    text-align: left;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    border-bottom: 2px solid var(--color-gray-200);
+    white-space: nowrap;
+}
+
+.admin-table td {
+    padding: var(--spacing-md);
+    border-bottom: 1px solid var(--color-gray-100);
+    color: var(--color-text-secondary);
+    vertical-align: middle;
+}
+
+.admin-table tbody tr:hover {
+    background-color: var(--color-gray-50);
+}
+
+.admin-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+    white-space: nowrap;
+}
+
+.btn--edit {
+    background-color: var(--color-info);
+    color: white;
+}
+
+.btn--edit:hover {
+    background-color: #2563eb;
+}
+
+.btn--delete {
+    background-color: var(--color-error);
+    color: white;
+}
+
+.btn--delete:hover {
+    background-color: #dc2626;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+}
+
+.status-badge--activo {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.status-badge--inactivo {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+#notifications-container {
         left: 16px;
         right: 16px;
         max-width: none;

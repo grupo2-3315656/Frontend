@@ -4,61 +4,81 @@
       "id": "1",
       "name": "Ana Torres",
       "email": "ana.torres@mail.com",
-      "date": "2026-06-09T14:40:00.000Z"
+      "date": "2026-06-09T14:40:00.000Z",
+      "role": "admin",
+      "status": "activo"
     },
     {
       "id": "2",
       "name": "Carlos Gómez",
       "email": "carlos.gomez@mail.com",
-      "date": "2026-06-09T14:40:15.123Z"
+      "date": "2026-06-09T14:40:15.123Z",
+      "role": "user",
+      "status": "activo"
     },
     {
       "id": "3",
       "name": "María López",
       "email": "maria.lopez@mail.com",
-      "date": "2026-06-09T14:40:30.456Z"
+      "date": "2026-06-09T14:40:30.456Z",
+      "role": "user",
+      "status": "activo"
     },
     {
       "id": "4",
       "name": "Juan Pérez",
       "email": "juan.perez@mail.com",
-      "date": "2026-06-09T14:40:45.789Z"
+      "date": "2026-06-09T14:40:45.789Z",
+      "role": "user",
+      "status": "inactivo"
     },
     {
       "id": "5",
       "name": "Laura Martínez",
       "email": "laura.martinez@mail.com",
-      "date": "2026-06-09T14:41:00.012Z"
+      "date": "2026-06-09T14:41:00.012Z",
+      "role": "user",
+      "status": "activo"
     },
     {
       "id": "1006789012",
       "name": "Pedro Sánchez",
       "email": "pedro.sanchez@mail.com",
-      "date": "2026-06-09T14:41:15.345Z"
+      "date": "2026-06-09T14:41:15.345Z",
+      "role": "user",
+      "status": "activo"
     },
     {
       "id": "1007890123",
       "name": "Sofía Ramírez",
       "email": "sofia.ramirez@mail.com",
-      "date": "2026-06-09T14:41:30.678Z"
+      "date": "2026-06-09T14:41:30.678Z",
+      "role": "user",
+      "status": "activo"
     },
     {
       "id": "1008901234",
       "name": "Andrés Morales",
       "email": "andres.morales@mail.com",
-      "date": "2026-06-09T14:41:45.901Z"
+      "date": "2026-06-09T14:41:45.901Z",
+      "role": "user",
+      "status": "inactivo"
     },
     {
       "id": "1009012345",
       "name": "Valentina Cruz",
       "email": "valentina.cruz@mail.com",
-      "date": "2026-06-09T14:42:00.234Z"
+      "date": "2026-06-09T14:42:00.234Z",
+      "role": "user",
+      "status": "activo"
     },
     {
       "id": "1010123456",
       "name": "Diego Herrera",
       "email": "diego.herrera@mail.com",
-      "date": "2026-06-09T14:42:15.567Z"
+      "date": "2026-06-09T14:42:15.567Z",
+      "role": "user",
+      "status": "activo"
     }
   ],
   "tasks": [
