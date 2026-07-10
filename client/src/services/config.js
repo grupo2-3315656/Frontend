@@ -25,10 +25,18 @@ export const setAuthUser = (user) => {
 
 export const isAuthenticated = () => !!authToken;
 
+let isAdmin = false;
+
+export const getIsAdmin = () => isAdmin;
+export const setIsAdmin = (value) => {
+    isAdmin = value;
+};
+
 export const logout = () => {
     authToken = null;
     authUser = null;
     currentUser = null;
+    isAdmin = false;
     localStorage.removeItem("authToken");
     localStorage.removeItem("authUser");
 };

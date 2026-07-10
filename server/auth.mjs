@@ -19,44 +19,69 @@ function getUsers() {
     }
 }
 
+function setCorsHeaders(res) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+}
+
+function sendJson(res, status, data) {
+    setCorsHeaders(res);
+    res.writeHead(status, { "Content-Type": "application/json" });
+    res.end(JSON.stringify(data));
+}
+
 createServer((req, res) => {
-    if (req.method !== "POST" || req.url !== "/api/auth/login") {
-        res.writeHead(404, { "Content-Type": "application/json" });
-        res.end(JSON.stringify({ error: "Not Found" }));
+    if (req.method === "OPTIONS") {
+        setCorsHeaders(res);
+        res.writeHead(204);
+        res.end();
         return;
     }
 
-    let body = "";
-    req.on("data", (chunk) => (body += chunk));
-    req.on("end", () => {
-        try {
-            const { email } = JSON.parse(body || "{}");
+    if (req.method === "GET" && req.url === "/api/users") {
+        const users = getUsers();
+        sendJson(res, 200, users);
+        return;
+    }
 
-            if (!email) {
-                res.writeHead(400, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ error: "Email es requerido" }));
-                return;
+    if (req.method === "POST" && req.url === "/api/auth/login") {
+        let body = "";
+        req.on("data", (chunk) => (body += chunk));
+        req.on("end", () => {
+            try {
+                const { email } = JSON.parse(body || "{}");
+
+                if (!email) {
+                    sendJson(res, 400, { error: "Email es requerido" });
+                    return;
+                }
+
+                const users = getUsers();
+                const user = users.find((u) => u.email === email);
+
+                if (!user) {
+                    sendJson(res, 401, { error: "Credenciales inválidas" });
+                    return;
+                }
+
+                sendJson(res, 200, {
+                    token: "mock-token-" + Date.now(),
+                    user: {
+                        id: user.id,
+                        name: user.name,
+                        email: user.email,
+                        role: user.role || "user",
+                    },
+                });
+            } catch {
+                sendJson(res, 400, { error: "Cuerpo de solicitud inválido" });
             }
+        });
+        return;
+    }
 
-            const users = getUsers();
-            const user = users.find((u) => u.email === email);
-
-            if (!user) {
-                res.writeHead(401, { "Content-Type": "application/json" });
-                res.end(JSON.stringify({ error: "Credenciales inválidas" }));
-                return;
-            }
-
-            res.writeHead(200, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({
-                token: "mock-token-" + Date.now(),
-                user: { id: user.id, name: user.name, email: user.email },
-            }));
-        } catch {
-            res.writeHead(400, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ error: "Cuerpo de solicitud inválido" }));
-        }
-    });
+    sendJson(res, 404, { error: "Not Found" });
 }).listen(PORT, HOST, () => {
     console.log(`Auth server corriendo en http://${HOST}:${PORT}`);
 });
