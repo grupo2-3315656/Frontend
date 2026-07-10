@@ -10,3 +10,4 @@ export { setInnerHtml } from "./setInnerHtml.js";
 export { setTextContent } from "./setTextContent.js";
 export { handleExportTasks } from "./exportTasksUI.js";
 export { renderAdminTable } from "./renderAdminTable.js";
+export { renderUserMultiSelect } from "./renderUserMultiSelect.js";

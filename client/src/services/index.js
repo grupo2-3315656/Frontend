@@ -5,4 +5,13 @@ export { sortTasks } from "./taskOrderService.js";
 export { renderFilteredTasks } from "./renderService.js";
 export { login } from "./authService.js";
 export { loadUsers } from "./adminService.js";
+export { getUserTasks } from "../api/getUserTasks.js";
 export * from "./config.js";
+export {
+    getSelectedUserIds,
+    setSelectedUserIds,
+    toggleUserSelection,
+    selectAllUsers,
+    clearUserSelection,
+    validateUserSelection,
+} from "./userMultiSelectService.js";
