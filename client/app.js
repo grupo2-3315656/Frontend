@@ -51,11 +51,67 @@ import {
     logout,
     loadUsers,
     renderAdminTable,
+    getUserTasks,
     getIsAdmin,
     setIsAdmin,
 } from "./src/index.js";
 
 const adminSection = document.getElementById("admin-section");
+const searchUserSection = document.getElementById("search-user-section");
+
+// ============================================
+// VISTAS POR ROL
+// ============================================
+function renderRoleViews() {
+    const isAdmin = getIsAdmin();
+
+    if (isAdmin) {
+        document.querySelectorAll(".form-section:not(#login-section)").forEach((el) => el.classList.remove("hidden"));
+        document.querySelector(".messages-section").classList.remove("hidden");
+        adminSection.classList.remove("hidden");
+    } else {
+        if (searchUserSection) searchUserSection.classList.add("hidden");
+        document.querySelectorAll(".form-section:not(#login-section):not(#search-user-section)").forEach((el) => el.classList.remove("hidden"));
+        document.querySelector(".messages-section").classList.remove("hidden");
+        adminSection.classList.add("hidden");
+    }
+}
+
+function hideAppContent() {
+    document.querySelectorAll(".form-section:not(#login-section)").forEach((el) => el.classList.add("hidden"));
+    document.querySelector(".messages-section").classList.add("hidden");
+    if (adminSection) adminSection.classList.add("hidden");
+}
+
+async function loadAdminPanel() {
+    if (getIsAdmin()) {
+        try {
+            const users = await loadUsers();
+            renderAdminTable(users);
+            adminSection.classList.remove("hidden");
+        } catch (error) {
+            showErrorMessage("Error al cargar panel de administración");
+        }
+    }
+}
+
+async function loadUserOwnTasks() {
+    try {
+        const user = getCurrentUser();
+        clearTasks();
+        showUserInfo(user);
+        toggleTaskForm(false);
+        const tasks = await getUserTasks(user.id);
+        allTasks = tasks;
+        if (allTasks.length > 0) {
+            renderFilteredTasks(allTasks);
+        } else {
+            showEmptyTasks();
+        }
+    } catch (error) {
+        showErrorMessage("Error al cargar tus tareas");
+    }
+}
 
 function restoreSession() {
     const savedToken = localStorage.getItem("authToken");
@@ -75,32 +131,14 @@ function restoreSession() {
     return false;
 }
 
-async function loadAdminPanel() {
-    if (getIsAdmin()) {
-        try {
-            const users = await loadUsers();
-            renderAdminTable(users);
-            adminSection.classList.remove("hidden");
-        } catch (error) {
-            showErrorMessage("Error al cargar panel de administración");
-        }
-    }
-}
-
-function showAppContent() {
-    document.querySelectorAll(".form-section:not(#login-section)").forEach((el) => el.classList.remove("hidden"));
-    document.querySelector(".messages-section").classList.remove("hidden");
-}
-
-function hideAppContent() {
-    document.querySelectorAll(".form-section:not(#login-section)").forEach((el) => el.classList.add("hidden"));
-    document.querySelector(".messages-section").classList.add("hidden");
-}
-
 if (restoreSession()) {
-    showAppContent();
+    renderRoleViews();
     toggleTaskForm(false);
-    loadAdminPanel();
+    if (getIsAdmin()) {
+        loadAdminPanel();
+    } else {
+        loadUserOwnTasks();
+    }
 } else {
     hideAppContent();
 }
@@ -124,10 +162,14 @@ btnLogin.addEventListener("click", async () => {
     try {
         const user = await login(email);
         loginSection.classList.add("hidden");
-        showAppContent();
+        renderRoleViews();
         toggleTaskForm(false);
         showMessage(`Bienvenido, ${user.name}`);
-        loadAdminPanel();
+        if (getIsAdmin()) {
+            loadAdminPanel();
+        } else {
+            loadUserOwnTasks();
+        }
     } catch (error) {
         setTextContent(loginError, error.message);
         showErrorMessage(error.message);
