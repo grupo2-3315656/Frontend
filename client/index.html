@@ -14,6 +14,25 @@
             <p class="header__subtitle">Programacion de Software</p>
         </header>
 
+        <section class="card form-section form-section--login" id="login-section">
+            <h2 class="card__title">Iniciar Sesión</h2>
+            <div class="form__group">
+                <label for="login-email" class="form__label">Correo Electrónico</label>
+                <input type="email" id="login-email" class="form__input" placeholder="ejemplo@correo.com" />
+            </div>
+            <div class="form__group">
+                <label for="login-password" class="form__label">Contraseña</label>
+                <input type="password" id="login-password" class="form__input" placeholder="Ingrese su contraseña" />
+                <span id="login-error" class="form__error"></span>
+            </div>
+            <button type="button" class="btn btn--primary" id="btn-login">
+                Iniciar Sesión
+            </button>
+            <p class="form__hint" id="login-hint" style="margin-top:0.75rem; font-size:0.8rem; color:var(--color-text-tertiary); text-align:center;">
+                Usa cualquier email de la base de datos (ej: ana.torres@mail.com)
+            </p>
+        </section>
+
         <section class="card form-section">
             <h2 class="card__title">Consultar Usuario</h2>
             <div class="form__group">
