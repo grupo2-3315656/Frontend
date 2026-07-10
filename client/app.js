@@ -51,6 +51,7 @@ import {
     logout,
     loadUsers,
     renderAdminTable,
+    deleteUser,
     getIsAdmin,
     setIsAdmin,
 } from "./src/index.js";
@@ -96,6 +97,25 @@ function hideAppContent() {
     document.querySelectorAll(".form-section:not(#login-section)").forEach((el) => el.classList.add("hidden"));
     document.querySelector(".messages-section").classList.add("hidden");
 }
+
+// ============================================
+// EVENTO ELIMINAR USUARIO (ADMIN)
+// ============================================
+document.getElementById("admin-table-body").addEventListener("click", async (e) => {
+    const deleteBtn = e.target.closest(".btn--delete");
+    if (!deleteBtn) return;
+
+    const tr = deleteBtn.closest("tr");
+    const userId = tr.dataset.id;
+
+    try {
+        await deleteUser(userId);
+        tr.remove();
+        showMessage("Usuario eliminado correctamente");
+    } catch (error) {
+        showErrorMessage(error.message);
+    }
+});
 
 if (restoreSession()) {
     showAppContent();
