@@ -40,10 +40,76 @@ import {
     tasksOrderBar,
     sortTasks,
     extractTasksFromDOM,
+    loginEmail,
+    loginError,
+    btnLogin,
+    loginSection,
+    login,
+    isAuthenticated,
+    setAuthToken,
+    setAuthUser,
+    logout,
 } from "./src/index.js";
-toggleTaskForm(true);
+
+function restoreSession() {
+    const savedToken = localStorage.getItem("authToken");
+    const savedUser = localStorage.getItem("authUser");
+    if (savedToken && savedUser) {
+        setAuthToken(savedToken);
+        const user = JSON.parse(savedUser);
+        setCurrentUser(user);
+        loginSection.classList.add("hidden");
+        showUserInfo(user);
+        showMessage(`Bienvenido de nuevo, ${user.name}`);
+        return true;
+    }
+    return false;
+}
+
+function showAppContent() {
+    document.querySelectorAll(".form-section:not(#login-section)").forEach((el) => el.classList.remove("hidden"));
+    document.querySelector(".messages-section").classList.remove("hidden");
+}
+
+function hideAppContent() {
+    document.querySelectorAll(".form-section:not(#login-section)").forEach((el) => el.classList.add("hidden"));
+    document.querySelector(".messages-section").classList.add("hidden");
+}
+
+if (restoreSession()) {
+    showAppContent();
+    toggleTaskForm(false);
+} else {
+    hideAppContent();
+}
 
 let allTasks = [];
+
+// ============================================
+// EVENTO INICIAR SESIÓN
+// ============================================
+btnLogin.addEventListener("click", async () => {
+    const email = loginEmail.value.trim();
+
+    setTextContent(loginError, "");
+
+    if (!isValidInput(email)) {
+        setTextContent(loginError, "Debe ingresar un correo electrónico");
+        showErrorMessage("Debe ingresar un correo electrónico");
+        return;
+    }
+
+    try {
+        const user = await login(email);
+        loginSection.classList.add("hidden");
+        showAppContent();
+        toggleTaskForm(false);
+        showMessage(`Bienvenido, ${user.name}`);
+    } catch (error) {
+        setTextContent(loginError, error.message);
+        showErrorMessage(error.message);
+    }
+});
 
 // ============================================
 // EVENTO BUSCAR USUARIO

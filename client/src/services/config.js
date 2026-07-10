@@ -1,5 +1,6 @@
 export const apiUrl = "http://localhost:3044/users";
 export const apiTasks = "http://localhost:3044/tasks";
+export const apiAuth = "http://10.5.225.34:3045/api/auth/login";
 
 let currentUser = null;
 let totalTasks = 0;
@@ -7,6 +8,29 @@ let totalTasks = 0;
 export const getCurrentUser = () => currentUser;
 export const setCurrentUser = (user) => {
     currentUser = user;
+};
+
+let authToken = null;
+let authUser = null;
+
+export const getAuthToken = () => authToken;
+export const setAuthToken = (token) => {
+    authToken = token;
+};
+
+export const getAuthUser = () => authUser;
+export const setAuthUser = (user) => {
+    authUser = user;
+};
+
+export const isAuthenticated = () => !!authToken;
+
+export const logout = () => {
+    authToken = null;
+    authUser = null;
+    currentUser = null;
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("authUser");
 };
 
 export const getTotalTasks = () => totalTasks;
@@ -27,6 +51,12 @@ export const getEditingTaskId = () => editingTaskId;
 export const setEditingTaskId = (id) => {
     editingTaskId = id;
 };
+
+export const loginEmail = document.getElementById("login-email");
+export const loginPassword = document.getElementById("login-password");
+export const loginError = document.getElementById("login-error");
+export const btnLogin = document.getElementById("btn-login");
+export const loginSection = document.getElementById("login-section");
 
 export const userDocInput = document.getElementById("user-doc");
 export const btnSearch = document.getElementById("btn-search");

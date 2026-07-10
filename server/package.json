@@ -8,6 +8,7 @@
   },
   "scripts": {
     "server": "npx json-server --watch db.json -p 3044 --host 10.5.225.34",
+    "auth": "node auth.mjs",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
