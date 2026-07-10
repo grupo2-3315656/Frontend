@@ -1,6 +1,6 @@
 export const apiUrl = "http://localhost:3044/users";
 export const apiTasks = "http://localhost:3044/tasks";
-export const apiAuth = "http://10.5.225.34:3045/api/auth/login";
+export const apiAuth = "http://localhost:3045/api/auth/login";
 
 let currentUser = null;
 let totalTasks = 0;
