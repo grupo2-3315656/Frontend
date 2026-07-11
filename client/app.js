@@ -59,6 +59,7 @@ function restoreSession() {
         const user = JSON.parse(savedUser);
         setCurrentUser(user);
         loginSection.classList.add("hidden");
+        document.getElementById("btn-logout").style.display = "block";
         showUserInfo(user);
         showMessage(`Bienvenido de nuevo, ${user.name}`);
         return true;
@@ -90,6 +91,7 @@ btnLogin.addEventListener("click", async () => {
     try {
         const user = await login(email);
         loginSection.classList.add("hidden");
+        document.getElementById("btn-logout").style.display = "block";
         showUserInfo(user);
         toggleTaskForm(false);
         showMessage(`Bienvenido, ${user.name}`);
@@ -97,4 +99,13 @@ btnLogin.addEventListener("click", async () => {
         setTextContent(loginError, error.message);
         showErrorMessage(error.message);
     }
+});
+
+// ============================================
+// EVENTO CERRAR SESIÓN
+// ============================================
+document.getElementById("btn-logout").addEventListener("click", () => {
+    logout();
+    document.getElementById("btn-logout").style.display = "none";
+    location.reload();
 });
