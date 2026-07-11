@@ -7,7 +7,7 @@
         "doc": "docs"
     },
     "scripts": {
-        "start": "serve client -l tcp://10.5.225.34:3001",
+        "start": "concurrently -k -n API,AUTH,VITE -c blue,green,yellow \"npx json-server --watch ../server/db.json -p 3044 --host localhost\" \"node ../server/auth.mjs\" \"npx vite\"",
         "dev": "vite",
         "build": "vite build",
         "preview": "vite preview"
@@ -28,6 +28,7 @@
         "serve": "^14.2.6"
     },
     "devDependencies": {
-        "vite": "^8.0.16"
+        "concurrently": "^10.0.3",
+        "vite": "^5.4.21"
     }
 }
