@@ -5,6 +5,15 @@
       "name": "Ana Torres",
       "email": "ana.torres@mail.com",
       "date": "2026-06-09T14:40:00.000Z",
+      "role": "user",
+      "status": "activo"
+    },
+    {
+      "id": "999",
+      "name": "Admin SSJ",
+      "email": "adminSSJ@gmail.com",
+      "password": "123",
+      "date": "2026-07-10T23:00:00.000Z",
       "role": "admin",
       "status": "activo"
     },

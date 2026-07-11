@@ -41,6 +41,7 @@ import {
     sortTasks,
     extractTasksFromDOM,
     loginEmail,
+    loginPassword,
     loginError,
     btnLogin,
     loginSection,
@@ -161,6 +162,7 @@ let allTasks = [];
 // ============================================
 btnLogin.addEventListener("click", async () => {
     const email = loginEmail.value.trim();
+    const password = loginPassword.value.trim();
 
     setTextContent(loginError, "");
 
@@ -171,7 +173,7 @@ btnLogin.addEventListener("click", async () => {
     }
 
     try {
-        const user = await login(email);
+        const user = await login(email, password);
         loginSection.classList.add("hidden");
         document.getElementById("btn-logout").style.display = "block";
         renderRoleViews();
