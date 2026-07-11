@@ -7,6 +7,7 @@
         "doc": "docs"
     },
     "scripts": {
+        "prestart": "npm install --ignore-scripts",
         "start": "concurrently -k -n API,AUTH,VITE -c blue,green,yellow \"npx json-server --watch ../server/db.json -p 3044 --host localhost\" \"node ../server/auth.mjs\" \"npx vite\"",
         "dev": "vite",
         "build": "vite build",
