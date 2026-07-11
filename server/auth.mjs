@@ -31,7 +31,7 @@ function saveUsers(users) {
 
 function setCorsHeaders(res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "GET, POST, DELETE, OPTIONS");
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
     res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 }
 
@@ -68,6 +68,31 @@ createServer((req, res) => {
         const [deleted] = users.splice(index, 1);
         saveUsers(users);
         sendJson(res, 200, { message: "Usuario eliminado", user: deleted });
+        return;
+    }
+
+    if (req.method === "PUT" && req.url.startsWith("/api/users/")) {
+        const id = req.url.split("/api/users/")[1];
+        let body = "";
+        req.on("data", (chunk) => (body += chunk));
+        req.on("end", () => {
+            try {
+                const updates = JSON.parse(body || "{}");
+                const users = getUsers();
+                const index = users.findIndex((u) => String(u.id) === id);
+
+                if (index === -1) {
+                    sendJson(res, 404, { error: "Usuario no encontrado" });
+                    return;
+                }
+
+                users[index] = { ...users[index], ...updates };
+                saveUsers(users);
+                sendJson(res, 200, users[index]);
+            } catch {
+                sendJson(res, 400, { error: "Cuerpo de solicitud inválido" });
+            }
+        });
         return;
     }
 

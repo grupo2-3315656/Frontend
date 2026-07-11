@@ -2,12 +2,13 @@ import { fetchApi } from "../utils/fetchApi.js";
 
 const API_USERS_URL = "http://localhost:3045/api/users";
 
-export const deleteUserById = async (id) => {
+export const updateUserById = async (id, data) => {
     return fetchApi(`${API_USERS_URL}/${id}`, {
-        method: "DELETE",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
     }, {
         404: "Usuario no encontrado",
         500: "Error interno del servidor",
-    }, "Error al eliminar usuario");
+    }, "Error al actualizar usuario");
 };
