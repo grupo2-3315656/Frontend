@@ -1,8 +1,8 @@
 import { loginUser as loginApi } from "../api/login.js";
 import { setAuthToken, setAuthUser, setCurrentUser, setIsAdmin } from "./config.js";
 
-export const login = async (email) => {
-    const data = await loginApi(email);
+export const login = async (email, password) => {
+    const data = await loginApi(email, password);
 
     setAuthToken(data.token);
     setAuthUser(data.user);

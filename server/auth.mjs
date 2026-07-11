@@ -101,7 +101,7 @@ createServer((req, res) => {
         req.on("data", (chunk) => (body += chunk));
         req.on("end", () => {
             try {
-                const { email } = JSON.parse(body || "{}");
+                const { email, password } = JSON.parse(body || "{}");
 
                 if (!email) {
                     sendJson(res, 400, { error: "Email es requerido" });
@@ -112,6 +112,11 @@ createServer((req, res) => {
                 const user = users.find((u) => u.email === email);
 
                 if (!user) {
+                    sendJson(res, 401, { error: "Credenciales inválidas" });
+                    return;
+                }
+
+                if (user.password && user.password !== password) {
                     sendJson(res, 401, { error: "Credenciales inválidas" });
                     return;
                 }
