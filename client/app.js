@@ -50,6 +50,8 @@ import {
     setAuthUser,
     logout,
     loadUsers,
+    deleteUser,
+    updateUser,
     renderAdminTable,
     renderUserMultiSelect,
     getUserTasks,
@@ -411,6 +413,79 @@ document.getElementById("user-multiselect-container").addEventListener("click", 
     } else {
         errorEl.style.display = "none";
         showMessage(`${getSelectedUserIds().length} usuario${getSelectedUserIds().length !== 1 ? "s" : ""} seleccionado${getSelectedUserIds().length !== 1 ? "s" : ""} correctamente`);
+    }
+});
+
+// ============================================
+// EVENTOS TABLA ADMIN (ELIMINAR / EDITAR)
+// ============================================
+document.getElementById("admin-table-body").addEventListener("click", async (e) => {
+    const deleteBtn = e.target.closest(".btn--delete");
+    if (deleteBtn) {
+        const tr = deleteBtn.closest("tr");
+        const userId = tr.dataset.id;
+        try {
+            await deleteUser(userId);
+            tr.remove();
+            showMessage("Usuario eliminado correctamente");
+        } catch (error) {
+            showErrorMessage(error.message);
+        }
+        return;
+    }
+
+    const editBtn = e.target.closest(".btn--edit");
+    if (editBtn) {
+        const tr = editBtn.closest("tr");
+        const userId = tr.dataset.id;
+        const userName = tr.children[1].textContent;
+        const userEmail = tr.children[2].textContent;
+        const userStatus = tr.children[3].querySelector(".status-badge").textContent.toLowerCase();
+
+        document.getElementById("edit-user-id").value = userId;
+        document.getElementById("edit-user-name").value = userName;
+        document.getElementById("edit-user-email").value = userEmail;
+        document.getElementById("edit-user-status").value = userStatus === "activo" ? "activo" : "inactivo";
+        document.getElementById("edit-user-modal").classList.add("modal--visible");
+    }
+});
+
+document.getElementById("edit-user-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const userId = document.getElementById("edit-user-id").value;
+    const name = document.getElementById("edit-user-name").value.trim();
+    const email = document.getElementById("edit-user-email").value.trim();
+    const status = document.getElementById("edit-user-status").value;
+
+    if (!name || !email) {
+        showErrorMessage("Nombre y email son requeridos");
+        return;
+    }
+
+    try {
+        const updated = await updateUser(userId, { name, email, status });
+        const tr = document.querySelector(`#admin-table-body tr[data-id="${userId}"]`);
+        if (tr) {
+            tr.children[1].textContent = updated.name;
+            tr.children[2].textContent = updated.email;
+            const badge = tr.children[3].querySelector(".status-badge");
+            badge.textContent = updated.status === "activo" ? "Activo" : "Inactivo";
+            badge.className = `status-badge ${updated.status === "activo" ? "status-badge--activo" : "status-badge--inactivo"}`;
+        }
+        document.getElementById("edit-user-modal").classList.remove("modal--visible");
+        showMessage("Usuario actualizado correctamente");
+    } catch (error) {
+        showErrorMessage(error.message);
+    }
+});
+
+document.getElementById("edit-user-cancel").addEventListener("click", () => {
+    document.getElementById("edit-user-modal").classList.remove("modal--visible");
+});
+
+document.getElementById("edit-user-modal").addEventListener("click", (e) => {
+    if (e.target === e.currentTarget) {
+        document.getElementById("edit-user-modal").classList.remove("modal--visible");
     }
 });
 

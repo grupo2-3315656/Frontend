@@ -141,6 +141,34 @@
             <div id="user-multiselect-container" class="multiselect-container"></div>
         </section>
 
+        <div class="modal" id="edit-user-modal">
+            <div class="modal__content">
+                <h3 class="modal__title">Editar Usuario</h3>
+                <form id="edit-user-form" class="modal__form">
+                    <input type="hidden" id="edit-user-id" />
+                    <div class="form__group">
+                        <label class="form__label" for="edit-user-name">Nombre</label>
+                        <input type="text" id="edit-user-name" class="form__input" required />
+                    </div>
+                    <div class="form__group">
+                        <label class="form__label" for="edit-user-email">Email</label>
+                        <input type="email" id="edit-user-email" class="form__input" required />
+                    </div>
+                    <div class="form__group">
+                        <label class="form__label" for="edit-user-status">Estado</label>
+                        <select id="edit-user-status" class="form__input">
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                    <div class="modal__actions">
+                        <button type="submit" class="btn btn--primary">Guardar</button>
+                        <button type="button" class="btn btn--danger" id="edit-user-cancel">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <footer class="footer">
             <p class="footer__text">&copy; 2026 - Proyecto de Jhon Gelvez || Jhon Falcon || Santiago Orozco</p>
         </footer>
