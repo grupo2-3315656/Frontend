@@ -1,1 +1,5 @@
 .antigravitycli
+node_modules/
+AGENTS.md
+.agents/
+skills-lock.json
