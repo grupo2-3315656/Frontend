@@ -586,6 +586,12 @@ SECCIÓN DE ORDEN DE TAREAS
         width: 100%;
         text-align: center;
     }
+
+    #notifications-container {
+        left: 16px;
+        right: 16px;
+        max-width: none;
+    }
 }
 
 /* ============================================
@@ -739,7 +745,6 @@ SECCIÓN DE ORDEN DE TAREAS
     }
 }
 
-@media (max-width: 480px) {
 /* ============================================
    ADMIN TABLE
    ============================================ */
@@ -871,13 +876,6 @@ SECCIÓN DE ORDEN DE TAREAS
     background: linear-gradient(135deg, #fee2e2, #fecaca);
     color: #991b1b;
     border: 1px solid #fca5a5;
-}
-
-#notifications-container {
-        left: 16px;
-        right: 16px;
-        max-width: none;
-    }
 }
 
 /* ============================================
