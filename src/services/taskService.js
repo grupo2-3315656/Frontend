@@ -1,15 +1,13 @@
-import { createTask as apiCreateTask } from "../api/createTask.js";
-import { updateTask as apiUpdateTask } from "../api/updateTask.js";
-import { deleteTask as apiDeleteTask } from "../api/deleteTask.js";
+import { tasksApi } from "../api/tasksApi.js";
 
 export const createTask = async (taskData) => {
-    return await apiCreateTask(taskData);
+    return await tasksApi.create(taskData);
 };
 
 export const updateTask = async (taskId, taskData) => {
-    return await apiUpdateTask(taskId, taskData);
+    return await tasksApi.update(taskId, taskData);
 };
 
 export const deleteTask = async (taskId) => {
-    return await apiDeleteTask(taskId);
+    return await tasksApi.delete(taskId);
 };

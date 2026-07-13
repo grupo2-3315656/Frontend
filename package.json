@@ -6,6 +6,7 @@
     "directories": {
         "doc": "docs"
     },
+    "type": "module",
     "scripts": {
         "start": "serve client -l tcp://10.5.225.34:3001",
         "dev": "vite",
