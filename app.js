@@ -40,6 +40,16 @@ import {
     tasksOrderBar,
     sortTasks,
     extractTasksFromDOM,
+    renderUsersList,
+    renderSingleUser,
+    toggleAdminPanel,
+    getAllUsers,
+    getUserById,
+    createUser,
+    updateUser,
+    deleteUser,
+    adminUserId,
+    adminIdError,
 } from "./src/index.js";
 toggleTaskForm(true);
 
@@ -245,3 +255,116 @@ document.addEventListener("change", (event) => {
 // EVENTO EXPORTAR TAREAS
 // ============================================
 btnExport.addEventListener("click", handleExportTasks);
+
+// ============================================
+// ADMINISTRACIÓN DE USUARIOS
+// ============================================
+
+adminHeader.addEventListener("click", async () => {
+    toggleAdminPanel(adminPanel, adminArrow);
+    if (!adminPanel.classList.contains("hidden")) {
+        try {
+            const users = await getAllUsers();
+            renderUsersList(users, adminUsersList);
+        } catch (error) {
+            showErrorMessage("Error al cargar usuarios: " + error.message);
+        }
+    }
+});
+
+btnAdminSearch.addEventListener("click", async () => {
+    const docValue = adminUserDoc.value.trim();
+    setTextContent(adminSearchError, "");
+
+    if (!isValidInput(docValue)) {
+        setTextContent(adminSearchError, "Debe ingresar un documento");
+        showErrorMessage("Debe ingresar un documento");
+        return;
+    }
+
+    try {
+        const user = await getUserById(docValue);
+        renderSingleUser(user, adminUsersList);
+        showMessage("Usuario encontrado");
+    } catch (error) {
+        setTextContent(adminSearchError, error.message);
+        showErrorMessage(error.message);
+    }
+});
+
+btnAdminCreate.addEventListener("click", async () => {
+    const id = adminUserId.value.trim();
+    const name = adminUserName.value.trim();
+    const email = adminUserEmail.value.trim();
+    setTextContent(adminIdError, "");
+    setTextContent(adminNameError, "");
+    setTextContent(adminEmailError, "");
+
+    if (!isValidInput(id)) {
+        setTextContent(adminIdError, "Debe ingresar un documento");
+        showErrorMessage("Debe ingresar un documento");
+        return;
+    }
+
+    if (!isValidInput(name)) {
+        setTextContent(adminNameError, "Debe ingresar un nombre");
+        showErrorMessage("Debe ingresar un nombre");
+        return;
+    }
+
+    if (!isValidInput(email)) {
+        setTextContent(adminEmailError, "Debe ingresar un correo");
+        showErrorMessage("Debe ingresar un correo");
+        return;
+    }
+
+    try {
+        await createUser({ id, name, email });
+        showMessage("Usuario creado correctamente");
+        adminUserId.value = "";
+        adminUserName.value = "";
+        adminUserEmail.value = "";
+        const users = await getAllUsers();
+        renderUsersList(users, adminUsersList);
+    } catch (error) {
+        showErrorMessage(error.message);
+    }
+});
+
+adminUsersList.addEventListener("click", async (event) => {
+    const btnUpdate = event.target.closest(".btn-admin-update");
+    if (btnUpdate) {
+        const id = btnUpdate.getAttribute("data-id");
+        const currentName = btnUpdate.getAttribute("data-name");
+        const currentEmail = btnUpdate.getAttribute("data-email");
+        const newName = prompt("Nombre actual: " + currentName + "\nNuevo nombre:", currentName);
+        if (newName === null) return;
+        const newEmail = prompt("Correo actual: " + currentEmail + "\nNuevo correo:", currentEmail);
+        if (newEmail === null) return;
+
+        try {
+            await updateUser(id, { name: newName, email: newEmail });
+            showMessage("Usuario actualizado correctamente");
+            const users = await getAllUsers();
+            renderUsersList(users, adminUsersList);
+        } catch (error) {
+            showErrorMessage(error.message);
+        }
+        return;
+    }
+
+    const btnDelete = event.target.closest(".btn-admin-delete");
+    if (btnDelete) {
+        const id = btnDelete.getAttribute("data-id");
+        if (!confirm("¿Está seguro de eliminar este usuario?")) return;
+
+        try {
+            await deleteUser(id);
+            showMessage("Usuario eliminado correctamente");
+            const users = await getAllUsers();
+            renderUsersList(users, adminUsersList);
+        } catch (error) {
+            showErrorMessage(error.message);
+        }
+    }
+});

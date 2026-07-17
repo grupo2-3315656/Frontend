@@ -540,6 +540,10 @@ SECCIÓN DE ORDEN DE TAREAS
         align-items: flex-start;
         gap: var(--spacing-sm);
     }
+
+    .admin-actions {
+        grid-template-columns: 1fr;
+    }
 }
 
 @media (max-width: 480px) {
@@ -562,6 +566,14 @@ SECCIÓN DE ORDEN DE TAREAS
     .btnUpdate {
         width: 100%;
         text-align: center;
+    }
+
+    .user-card__actions {
+        flex-direction: column;
+    }
+
+    .user-card__actions .btn {
+        width: 100%;
     }
 }
 
@@ -628,6 +640,175 @@ SECCIÓN DE ORDEN DE TAREAS
 
 #user-info-display {
     margin-bottom: var(--spacing-md);
+}
+
+/* ============================================
+   BOTÓN PELIGRO
+   ============================================ */
+
+.btn--danger {
+    background-color: var(--color-error);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn--danger:hover {
+    background-color: #dc2626;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.btn--danger:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+/* ============================================
+   ADMINISTRACIÓN DE USUARIOS
+   ============================================ */
+
+.admin-header {
+    cursor: pointer;
+    user-select: none;
+    margin: calc(-1 * var(--spacing-xl));
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-lg) var(--spacing-xl);
+    background: linear-gradient(135deg, var(--color-primary-lighter) 0%, var(--color-gray-50) 100%);
+    border-radius: var(--radius-lg);
+    transition: all var(--transition-base);
+}
+
+.admin-header:hover {
+    background: linear-gradient(135deg, var(--color-primary-lighter) 0%, var(--color-gray-100) 100%);
+}
+
+.admin-header__title {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    margin-bottom: 0;
+    font-size: var(--font-size-xl);
+    color: var(--color-primary);
+}
+
+.admin-header__icon {
+    font-size: var(--font-size-2xl);
+}
+
+.admin-header__arrow {
+    margin-left: auto;
+    font-size: var(--font-size-sm);
+    transition: transform var(--transition-base);
+}
+
+.admin-panel {
+    border-top: 1px solid var(--color-gray-200);
+    padding-top: var(--spacing-lg);
+}
+
+.admin-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-xl);
+    margin-bottom: var(--spacing-xl);
+}
+
+.admin-actions__subtitle {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-md);
+}
+
+.admin-users-list {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: var(--spacing-sm);
+}
+
+.admin-users-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.admin-users-list::-webkit-scrollbar-track {
+    background: var(--color-gray-100);
+    border-radius: var(--radius-full);
+}
+
+.admin-users-list::-webkit-scrollbar-thumb {
+    background: var(--color-gray-300);
+    border-radius: var(--radius-full);
+}
+
+.admin-users-list::-webkit-scrollbar-thumb:hover {
+    background: var(--color-gray-400);
+}
+
+/* Tarjeta de usuario */
+.user-card {
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
+    border-left: 4px solid var(--color-primary);
+    animation: slideIn var(--transition-slow) ease-out;
+    transition: all var(--transition-base);
+    margin-bottom: var(--spacing-md);
+}
+
+.user-card:hover {
+    box-shadow: var(--shadow-xl);
+    transform: translateY(-2px);
+}
+
+.user-card__header {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-md);
+}
+
+.user-card__avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: var(--radius-full);
+    background: linear-gradient(135deg, var(--color-primary-light), var(--color-primary));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-xl);
+    flex-shrink: 0;
+}
+
+.user-card__info {
+    flex: 1;
+}
+
+.user-card__name {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.user-card__email {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-xs);
+}
+
+.user-card__doc {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-tertiary);
+    font-weight: var(--font-weight-medium);
+}
+
+.user-card__actions {
+    display: flex;
+    gap: var(--spacing-sm);
+    justify-content: flex-end;
 }
 
 /* ============================================

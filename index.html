@@ -15,6 +15,55 @@
         </header>
 
         <section class="card form-section">
+            <div class="admin-header" id="admin-header">
+                <h2 class="card__title admin-header__title">
+                    <span class="admin-header__icon">👥</span>
+                    Administración de Usuarios
+                    <span class="admin-header__arrow" id="admin-arrow">▼</span>
+                </h2>
+            </div>
+            <div class="admin-panel" id="admin-panel">
+                <div class="admin-actions">
+                    <div class="admin-actions__search">
+                        <h3 class="admin-actions__subtitle">Consultar Usuario</h3>
+                        <div class="form__group">
+                            <input type="text" id="admin-user-doc" class="form__input" placeholder="Documento del usuario..." />
+                            <span id="admin-search-error" class="form__error"></span>
+                        </div>
+                        <button type="button" class="btn btn--primary btn--sm" id="btn-admin-search">
+                            <span class="btn__icon">🔍</span> Consultar
+                        </button>
+                    </div>
+                    <div class="admin-actions__create">
+                        <h3 class="admin-actions__subtitle">Crear Usuario</h3>
+                        <div class="form__group">
+                            <input type="text" id="admin-user-id" class="form__input" placeholder="Documento de identidad..." />
+                            <span id="admin-id-error" class="form__error"></span>
+                        </div>
+                        <div class="form__group">
+                            <input type="text" id="admin-user-name" class="form__input" placeholder="Nombre completo..." />
+                            <span id="admin-name-error" class="form__error"></span>
+                        </div>
+                        <div class="form__group">
+                            <input type="email" id="admin-user-email" class="form__input" placeholder="Correo electrónico..." />
+                            <span id="admin-email-error" class="form__error"></span>
+                        </div>
+                        <button type="button" class="btn btn--primary btn--sm" id="btn-admin-create">
+                            <span class="btn__icon">➕</span> Crear
+                        </button>
+                    </div>
+                </div>
+                <div class="admin-users-list" id="admin-users-list">
+                    <div class="messages-empty">
+                        <div class="messages-empty__icon">👥</div>
+                        <p class="messages-empty__text">No hay usuarios consultados</p>
+                        <p class="messages-empty__subtext">Use consultar o haga clic en el encabezado para ver todos.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card form-section">
             <h2 class="card__title">Consultar Usuario</h2>
             <div class="form__group">
                 <label for="user-doc" class="form__label">Documento del Usuario</label>
