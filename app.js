@@ -10,6 +10,7 @@ import {
     descError,
     taskStatus,
     statusError,
+    usersError,
     tasksTable,
     filterTitle,
     filterStatus,
@@ -28,7 +29,9 @@ import {
     handleExportTasks,
     searchUser,
     createTask,
+    createTaskWithAssignments,
     updateTask,
+    updateTaskWithAssignments,
     deleteTask,
     filterTasksList,
     renderFilteredTasks,
@@ -40,8 +43,11 @@ import {
     tasksOrderBar,
     sortTasks,
     extractTasksFromDOM,
+    getSelectedUserIds,
+    clearSelectedUsers,
+    setSelectedUsers,
+    assignmentsApi,
 } from "./src/index.js";
-toggleTaskForm(true);
 
 let allTasks = [];
 
@@ -103,6 +109,7 @@ taskForm.addEventListener("submit", async (event) => {
     setTextContent(titleError, "");
     setTextContent(descError, "");
     setTextContent(statusError, "");
+    setTextContent(usersError, "");
 
     if (!isValidInput(title)) {
         setTextContent(titleError, "Debe ingresar un título");
@@ -122,9 +129,18 @@ taskForm.addEventListener("submit", async (event) => {
         return;
     }
 
+    const selectedUserIds = getSelectedUserIds();
+
+    if (!selectedUserIds.length) {
+        setTextContent(usersError, "Debe seleccionar al menos un usuario");
+        showErrorMessage("Debe seleccionar al menos un usuario");
+        return;
+    }
+
     try {
         if (editingId) {
-            const taskEdit = await updateTask(editingId, {
+            const taskEdit = await updateTaskWithAssignments(editingId, {
+                userIds: selectedUserIds,
                 title,
                 description,
                 status,
@@ -138,14 +154,15 @@ taskForm.addEventListener("submit", async (event) => {
 
             setEditingTaskId(null);
             taskForm.reset();
+            clearSelectedUsers();
             setTextContent(
                 taskForm.querySelector('button[type="submit"]'),
                 "Guardar Tarea",
             );
             showMessage("Tarea actualizada correctamente");
         } else {
-            const taskSaved = await createTask({
-                userId: getCurrentUser().id,
+            const taskSaved = await createTaskWithAssignments({
+                userIds: selectedUserIds,
                 title,
                 description,
                 status,
@@ -154,6 +171,7 @@ taskForm.addEventListener("submit", async (event) => {
             allTasks.push(taskSaved);
             renderFilteredTasks(allTasks);
             taskForm.reset();
+            clearSelectedUsers();
             showMessage("Tarea registrada correctamente");
         }
     } catch (error) {
@@ -164,7 +182,7 @@ taskForm.addEventListener("submit", async (event) => {
 // ============================================
 // EVENTO EDITAR TAREA
 // ============================================
-tasksTable.addEventListener("click", (event) => {
+tasksTable.addEventListener("click", async (event) => {
     const btnUpdate = event.target.closest(".btnUpdate");
     if (!btnUpdate) return;
 
@@ -188,6 +206,11 @@ tasksTable.addEventListener("click", (event) => {
     taskStatus.value = "";
 
     setEditingTaskId(taskId);
+
+    try {
+        const users = await assignmentsApi.getByTaskId(taskId);
+        setSelectedUsers(users);
+    } catch {}
 
     const submitBtn = taskForm.querySelector('button[type="submit"]');
     setTextContent(submitBtn, "Actualizar Tarea");
