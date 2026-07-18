@@ -45,7 +45,6 @@ import {
     getSelectedUserIds,
     clearSelectedUsers,
 } from "./src/index.js";
-toggleTaskForm(true);
 loadUsers();
 
 let allTasks = [];

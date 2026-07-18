@@ -30,6 +30,8 @@ export const addTaskToTable = (task) => {
     const statusText = getStatusLabel(task.status);
 
     const currentUser = getCurrentUser();
+    const userName = currentUser?.name || "Usuario";
+    const userInitial = userName.charAt(0).toUpperCase();
 
     taskCard.innerHTML = `
     
@@ -37,12 +39,12 @@ export const addTaskToTable = (task) => {
 
             <div class="message-card__user">
                 <div class="message-card__avatar">
-                    ${currentUser.name.charAt(0).toUpperCase()}
+                    ${userInitial}
                 </div>
 
                 <div>
                     <div class="message-card__username">
-                        ${currentUser.name}
+                        ${userName}
                     </div>
                     
                     <div class="message-card__title">
