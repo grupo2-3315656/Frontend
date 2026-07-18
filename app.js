@@ -31,6 +31,7 @@ import {
     createTask,
     createTaskWithAssignments,
     updateTask,
+    updateTaskWithAssignments,
     deleteTask,
     filterTasksList,
     renderFilteredTasks,
@@ -138,7 +139,8 @@ taskForm.addEventListener("submit", async (event) => {
 
     try {
         if (editingId) {
-            const taskEdit = await updateTask(editingId, {
+            const taskEdit = await updateTaskWithAssignments(editingId, {
+                userIds: selectedUserIds,
                 title,
                 description,
                 status,
