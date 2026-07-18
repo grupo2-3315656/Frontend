@@ -33,6 +33,7 @@ import {
     searchUser,
     createTask,
     updateTask,
+    updateTaskStatus,
     deleteTask,
     getUserTasksList,
     renderFilteredTasks,
@@ -258,7 +259,7 @@ tasksTable.addEventListener("click", async (event) => {
     const card = btnStatus.closest(".message-card");
 
     try {
-        const updated = await updateTask(taskId, { status: newStatus });
+        const updated = await updateTaskStatus(taskId, newStatus);
         const index = allTasks.findIndex((t) => t.id == updated.id);
         if (index !== -1) {
             allTasks[index] = updated;
