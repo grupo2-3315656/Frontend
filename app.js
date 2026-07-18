@@ -46,8 +46,8 @@ import {
     getSelectedUserIds,
     clearSelectedUsers,
     setSelectedUsers,
+    assignmentsApi,
 } from "./src/index.js";
-import { assignmentsApi } from "./src/api/assignments.js";
 
 let allTasks = [];
 
