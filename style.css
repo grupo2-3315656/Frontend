@@ -216,6 +216,10 @@ body {
     outline: none;
 }
 
+.form__input[multiple] {
+    min-height: 120px;
+}
+
 .form__input:focus {
     border-color: var(--color-primary);
     box-shadow: 0 0 0 3px var(--color-primary-lighter);

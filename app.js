@@ -10,6 +10,8 @@ import {
     descError,
     taskStatus,
     statusError,
+    taskUsers,
+    usersError,
     tasksTable,
     filterTitle,
     filterStatus,
@@ -41,7 +43,20 @@ import {
     sortTasks,
     extractTasksFromDOM,
 } from "./src/index.js";
+import { usersApi } from "./src/api/usersApi.js";
 toggleTaskForm(true);
+
+const loadUsers = async () => {
+    try {
+        const users = await usersApi.get();
+        taskUsers.innerHTML = users.map(u =>
+            `<option value="${u.id}">${u.name}</option>`
+        ).join("");
+    } catch {
+        taskUsers.innerHTML = "<option value=\"\">Error al cargar usuarios</option>";
+    }
+};
+loadUsers();
 
 let allTasks = [];
 
@@ -103,6 +118,7 @@ taskForm.addEventListener("submit", async (event) => {
     setTextContent(titleError, "");
     setTextContent(descError, "");
     setTextContent(statusError, "");
+    setTextContent(usersError, "");
 
     if (!isValidInput(title)) {
         setTextContent(titleError, "Debe ingresar un título");
@@ -122,6 +138,14 @@ taskForm.addEventListener("submit", async (event) => {
         return;
     }
 
+    const selectedUserIds = Array.from(taskUsers.selectedOptions).map(o => o.value);
+
+    if (!selectedUserIds.length) {
+        setTextContent(usersError, "Debe seleccionar al menos un usuario");
+        showErrorMessage("Debe seleccionar al menos un usuario");
+        return;
+    }
+
     try {
         if (editingId) {
             const taskEdit = await updateTask(editingId, {
@@ -138,6 +162,7 @@ taskForm.addEventListener("submit", async (event) => {
 
             setEditingTaskId(null);
             taskForm.reset();
+            Array.from(taskUsers.options).forEach(o => o.selected = false);
             setTextContent(
                 taskForm.querySelector('button[type="submit"]'),
                 "Guardar Tarea",
@@ -145,7 +170,7 @@ taskForm.addEventListener("submit", async (event) => {
             showMessage("Tarea actualizada correctamente");
         } else {
             const taskSaved = await createTask({
-                userId: getCurrentUser().id,
+                userIds: selectedUserIds,
                 title,
                 description,
                 status,
@@ -154,6 +179,7 @@ taskForm.addEventListener("submit", async (event) => {
             allTasks.push(taskSaved);
             renderFilteredTasks(allTasks);
             taskForm.reset();
+            Array.from(taskUsers.options).forEach(o => o.selected = false);
             showMessage("Tarea registrada correctamente");
         }
     } catch (error) {
