@@ -220,11 +220,6 @@ body {
     min-height: 120px;
 }
 
-.form__input[multiple]:focus {
-    border-color: var(--color-gray-200);
-    box-shadow: none;
-}
-
 .selected-users {
     display: flex;
     flex-wrap: wrap;
