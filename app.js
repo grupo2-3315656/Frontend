@@ -3,6 +3,7 @@ import {
     userDocInput,
     searchError,
     userInfoDisplay,
+    userTasksSection,
     taskForm,
     taskTitle,
     titleError,
@@ -71,6 +72,7 @@ btnSearch.addEventListener("click", async () => {
         setCurrentUser(user);
         showUserInfo(user);
         toggleTaskForm(false);
+        userTasksSection.style.display = "";
         showMessage("Usuario encontrado correctamente");
 
         allTasks = tasks;
@@ -82,6 +84,7 @@ btnSearch.addEventListener("click", async () => {
         }
     } catch (error) {
         toggleTaskForm(true);
+        userTasksSection.style.display = "none";
         setInnerHtml(
             userInfoDisplay,
             `
