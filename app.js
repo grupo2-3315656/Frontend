@@ -29,6 +29,7 @@ import {
     handleExportTasks,
     searchUser,
     createTask,
+    createTaskWithAssignments,
     updateTask,
     deleteTask,
     filterTasksList,
@@ -158,7 +159,7 @@ taskForm.addEventListener("submit", async (event) => {
             );
             showMessage("Tarea actualizada correctamente");
         } else {
-            const taskSaved = await createTask({
+            const taskSaved = await createTaskWithAssignments({
                 userIds: selectedUserIds,
                 title,
                 description,
