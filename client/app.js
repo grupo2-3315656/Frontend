@@ -13,6 +13,7 @@ import {
     taskUsers,
     usersError,
     tasksTable,
+    userTasksContainer,
     filterTitle,
     filterStatus,
     btnExport,
@@ -24,6 +25,7 @@ import {
     clearTasks,
     showUserInfo,
     addTaskToTable,
+    renderUserTasks,
     showMessage,
     showErrorMessage,
     showEmptyTasks,
@@ -32,6 +34,7 @@ import {
     createTask,
     updateTask,
     deleteTask,
+    getUserTasksList,
     renderFilteredTasks,
     isValidInput,
     setTextContent,
@@ -77,6 +80,10 @@ btnSearch.addEventListener("click", async () => {
         setCurrentUser(user);
         showUserInfo(user);
         toggleTaskForm(false);
+
+        const userTasks = await getUserTasksList(user.id);
+        renderUserTasks(userTasks, userTasksContainer);
+
         showMessage("Usuario encontrado correctamente");
 
         allTasks = tasks;

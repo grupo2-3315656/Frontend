@@ -42,6 +42,7 @@ export const statusError = document.getElementById("status-error");
 export const taskUsers = document.getElementById("task-users");
 export const usersError = document.getElementById("users-error");
 export const tasksTable = document.getElementById("tasks-table");
+export const userTasksContainer = document.getElementById("user-tasks-container");
 export const taskCount = document.getElementById("task-count");
 export const filterTitle = document.getElementById("filter-title");
 export const filterStatus = document.getElementById("filter-status");

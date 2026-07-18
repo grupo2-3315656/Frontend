@@ -5,6 +5,7 @@ import {
     incrementTotalTasks,
     getTotalTasks,
 } from "../services/config.js";
+import { getStatusLabel } from "../utils/index.js";
 
 // ============================================
 // AGREGAR TAREA A LA TABLA
@@ -34,6 +35,8 @@ export const addTaskToTable = (task) => {
         { value: "completada", label: "Completada" },
     ];
 
+    const statusText = getStatusLabel(task.status);
+
     taskCard.innerHTML = `
         <div class="message-card__header">
             <div class="message-card__user">
@@ -49,6 +52,7 @@ export const addTaskToTable = (task) => {
                     </div>
                 </div>
             </div>
+            <span class="task-badge task-badge--${task.status}">${statusText}</span>
         </div>
         <div class="message-card__body">
             <div class="message-card__content">
@@ -77,4 +81,49 @@ export const addTaskToTable = (task) => {
 
     incrementTotalTasks();
     taskCount.textContent = `${getTotalTasks()} Tareas`;
+};
+
+export const renderUserTasks = (tasks, container) => {
+    container.innerHTML = "";
+
+    if (!tasks.length) {
+        container.innerHTML = `
+            <div class="messages-empty">
+                <div class="messages-empty__icon">📋</div>
+                <p class="messages-empty__text">No hay tareas registradas</p>
+                <p class="messages-empty__subtext">Este usuario no tiene tareas asignadas.</p>
+            </div>
+        `;
+        return;
+    }
+
+    tasks.forEach((task) => {
+        const card = document.createElement("div");
+        card.classList.add("message-card");
+        if (task.id) card.id = `${task.id}`;
+        if (task.date) card.dataset.date = task.date;
+
+        const currentUser = getCurrentUser();
+        const statusText = getStatusLabel(task.status);
+
+        card.innerHTML = `
+            <div class="message-card__header">
+                <div class="message-card__user">
+                    <div class="message-card__avatar">
+                        ${currentUser.name.charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                        <div class="message-card__username">${currentUser.name}</div>
+                        <div class="message-card__title">${task.title}</div>
+                    </div>
+                </div>
+                <span class="task-badge task-badge--${task.status}">${statusText}</span>
+            </div>
+            <div class="message-card__body">
+                <div class="message-card__content">${task.description || "Sin descripción"}</div>
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
 };

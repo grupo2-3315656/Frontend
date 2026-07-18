@@ -3,7 +3,7 @@ export { tasksOrderBar } from "./taskOrderBar.js";
 export { toggleTaskForm } from "./toggleTaskForm.js";
 export { clearTasks } from "./clearTasks.js";
 export { showUserInfo } from "./showUserInfo.js";
-export { addTaskToTable } from "./addTaskToTable.js";
+export { addTaskToTable, renderUserTasks } from "./addTaskToTable.js";
 export { showMessage, showErrorMessage, showInfoMessage } from "./notifications.js";
 export { showEmptyTasks } from "./showEmptyTasks.js";
 export { setInnerHtml } from "./setInnerHtml.js";
