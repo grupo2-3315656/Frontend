@@ -9,3 +9,4 @@ export { showEmptyTasks } from "./showEmptyTasks.js";
 export { setInnerHtml } from "./setInnerHtml.js";
 export { setTextContent } from "./setTextContent.js";
 export { handleExportTasks } from "./exportTasksUI.js";
+export { loadUsers, getSelectedUserIds, clearSelectedUsers } from "./userSelectUI.js";

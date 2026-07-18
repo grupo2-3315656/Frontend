@@ -216,10 +216,6 @@ body {
     outline: none;
 }
 
-.form__input[multiple] {
-    min-height: 120px;
-}
-
 .selected-users {
     display: flex;
     flex-wrap: wrap;

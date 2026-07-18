@@ -10,7 +10,6 @@ import {
     descError,
     taskStatus,
     statusError,
-    taskUsers,
     usersError,
     tasksTable,
     filterTitle,
@@ -42,8 +41,10 @@ import {
     tasksOrderBar,
     sortTasks,
     extractTasksFromDOM,
+    loadUsers,
+    getSelectedUserIds,
+    clearSelectedUsers,
 } from "./src/index.js";
-import { loadUsers } from "./src/ui/userSelectUI.js";
 toggleTaskForm(true);
 loadUsers();
 
@@ -127,7 +128,7 @@ taskForm.addEventListener("submit", async (event) => {
         return;
     }
 
-    const selectedUserIds = Array.from(taskUsers.selectedOptions).map(o => o.value);
+    const selectedUserIds = getSelectedUserIds();
 
     if (!selectedUserIds.length) {
         setTextContent(usersError, "Debe seleccionar al menos un usuario");
@@ -151,7 +152,7 @@ taskForm.addEventListener("submit", async (event) => {
 
             setEditingTaskId(null);
             taskForm.reset();
-            Array.from(taskUsers.options).forEach(o => o.selected = false);
+            clearSelectedUsers();
             setTextContent(
                 taskForm.querySelector('button[type="submit"]'),
                 "Guardar Tarea",
@@ -168,7 +169,7 @@ taskForm.addEventListener("submit", async (event) => {
             allTasks.push(taskSaved);
             renderFilteredTasks(allTasks);
             taskForm.reset();
-            Array.from(taskUsers.options).forEach(o => o.selected = false);
+            clearSelectedUsers();
             showMessage("Tarea registrada correctamente");
         }
     } catch (error) {

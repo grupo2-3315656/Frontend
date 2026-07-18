@@ -1,23 +1,29 @@
 import { usersApi } from "../api/usersApi.js";
 import { taskUsers, selectedUsersContainer } from "../services/config.js";
 
+let selectedUsers = [];
+
 export const loadUsers = async () => {
     try {
         const users = await usersApi.get();
-        taskUsers.innerHTML = users.map(u =>
-            `<option value="${u.id}">${u.name}</option>`
-        ).join("");
+        taskUsers.innerHTML = `<option value="">Asignar a usuarios</option>` +
+            users.map(u =>
+                `<option value="${u.id}">${u.name}</option>`
+            ).join("");
     } catch {
         taskUsers.innerHTML = "<option value=\"\">Error al cargar usuarios</option>";
     }
 };
 
+export const getSelectedUserIds = () => selectedUsers.map(u => u.id);
+
+export const clearSelectedUsers = () => {
+    selectedUsers = [];
+    updateSelectedUsers();
+};
+
 const updateSelectedUsers = () => {
-    const selected = Array.from(taskUsers.selectedOptions).map(o => ({
-        id: o.value,
-        name: o.textContent,
-    }));
-    selectedUsersContainer.innerHTML = selected.map(u =>
+    selectedUsersContainer.innerHTML = selectedUsers.map(u =>
         `<span class="user-chip" data-initial="${u.name.charAt(0).toUpperCase()}">
             ${u.name}
             <button type="button" class="user-chip__remove" data-value="${u.id}">&times;</button>
@@ -25,15 +31,22 @@ const updateSelectedUsers = () => {
     ).join("");
 };
 
+taskUsers.addEventListener("change", () => {
+    const option = taskUsers.selectedOptions[0];
+    if (!option || !option.value) return;
+
+    const alreadySelected = selectedUsers.some(u => u.id === option.value);
+    if (!alreadySelected) {
+        selectedUsers.push({ id: option.value, name: option.textContent });
+    }
+    taskUsers.value = "";
+    updateSelectedUsers();
+});
+
 selectedUsersContainer.addEventListener("click", (e) => {
     const btn = e.target.closest(".user-chip__remove");
     if (!btn) return;
 
-    const option = Array.from(taskUsers.options).find(o => o.value === btn.dataset.value);
-    if (option) {
-        option.selected = false;
-        taskUsers.dispatchEvent(new Event("change"));
-    }
+    selectedUsers = selectedUsers.filter(u => u.id !== btn.dataset.value);
+    updateSelectedUsers();
 });
-
-taskUsers.addEventListener("change", updateSelectedUsers);
