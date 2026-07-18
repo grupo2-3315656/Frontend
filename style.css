@@ -220,6 +220,41 @@ body {
     min-height: 120px;
 }
 
+.selected-users {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.user-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px 4px 4px;
+    background: var(--color-primary-lighter);
+    border: 1px solid var(--color-primary-light);
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--color-primary-dark);
+}
+
+.user-chip::before {
+    content: attr(data-initial);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--color-primary);
+    color: white;
+    font-weight: bold;
+    font-size: 12px;
+    margin-right: 2px;
+}
+
 .form__input:focus {
     border-color: var(--color-primary);
     box-shadow: 0 0 0 3px var(--color-primary-lighter);

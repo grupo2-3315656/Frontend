@@ -45,3 +45,4 @@ export const filterStatus = document.getElementById("filter-status");
 export const btnExport = document.getElementById("btn-export");
 export const taskUsers = document.getElementById("task-users");
 export const usersError = document.getElementById("users-error");
+export const selectedUsersContainer = document.getElementById("selected-users");

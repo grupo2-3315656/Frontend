@@ -43,19 +43,8 @@ import {
     sortTasks,
     extractTasksFromDOM,
 } from "./src/index.js";
-import { usersApi } from "./src/api/usersApi.js";
+import { loadUsers } from "./src/ui/userSelectUI.js";
 toggleTaskForm(true);
-
-const loadUsers = async () => {
-    try {
-        const users = await usersApi.get();
-        taskUsers.innerHTML = users.map(u =>
-            `<option value="${u.id}">${u.name}</option>`
-        ).join("");
-    } catch {
-        taskUsers.innerHTML = "<option value=\"\">Error al cargar usuarios</option>";
-    }
-};
 loadUsers();
 
 let allTasks = [];
