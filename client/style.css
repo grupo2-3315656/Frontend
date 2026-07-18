@@ -626,6 +626,51 @@ SECCIÓN DE ORDEN DE TAREAS
     padding: var(--spacing-md) var(--spacing-3xl);
 }
 
+.status-buttons {
+    display: flex;
+    gap: var(--spacing-xs);
+    flex-wrap: wrap;
+    padding: 0 var(--spacing-lg) var(--spacing-lg);
+}
+
+.btn-status {
+    padding: 4px 12px;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-full);
+    background: transparent;
+    color: var(--color-text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.btn-status:hover {
+    border-color: var(--color-primary-light);
+    color: var(--color-primary);
+}
+
+.btn-status.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+}
+
+.btn-status[data-status="pendiente"].active {
+    background: #f59e0b;
+    border-color: #f59e0b;
+}
+
+.btn-status[data-status="en-progreso"].active {
+    background: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.btn-status[data-status="completada"].active {
+    background: #10b981;
+    border-color: #10b981;
+}
+
 #user-info-display {
     margin-bottom: var(--spacing-md);
 }

@@ -5,7 +5,6 @@ import {
     incrementTotalTasks,
     getTotalTasks,
 } from "../services/config.js";
-import { getStatusLabel } from "../utils/index.js";
 
 // ============================================
 // AGREGAR TAREA A LA TABLA
@@ -27,44 +26,48 @@ export const addTaskToTable = (task) => {
         taskCard.dataset.date = task.date;
     }
 
-    const statusText = getStatusLabel(task.status);
-
     const currentUser = getCurrentUser();
 
-    taskCard.innerHTML = `
-    
-        <div class="message-card__header">
+    const statuses = [
+        { value: "pendiente", label: "Pendiente" },
+        { value: "en-progreso", label: "En Progreso" },
+        { value: "completada", label: "Completada" },
+    ];
 
+    taskCard.innerHTML = `
+        <div class="message-card__header">
             <div class="message-card__user">
                 <div class="message-card__avatar">
                     ${currentUser.name.charAt(0).toUpperCase()}
                 </div>
-
                 <div>
                     <div class="message-card__username">
                         ${currentUser.name}
                     </div>
-                    
                     <div class="message-card__title">
                         ${task.title}
                     </div>
                 </div>
             </div>
-
-            <span class="task-badge task-badge--${task.status}">
-                ${statusText}
-            </span>
-
         </div>
-        
         <div class="message-card__body">
             <div class="message-card__content">
                 ${task.description || "Sin descripción"}
             </div>
-            <button type="button" class="btn btn--secondary btnUpdate" data-id="${task.id}">
+        </div>
+        <div class="status-buttons">
+            ${statuses.map(s => `
+                <button type="button"
+                    class="btn-status${task.status === s.value ? ' active' : ''}"
+                    data-id="${task.id}"
+                    data-status="${s.value}">
+                    ${s.label}
+                </button>
+            `).join('')}
+            <button type="button" class="btn btn--sm btnUpdate" data-id="${task.id}">
                 Actualizar
             </button>
-            <button type="button" class="btn btn--secondary btnDelete" data-id="${task.id}">
+            <button type="button" class="btn btn--sm btnDelete" data-id="${task.id}">
                 Eliminar
             </button>
         </div>

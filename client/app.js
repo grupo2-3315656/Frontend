@@ -10,6 +10,8 @@ import {
     descError,
     taskStatus,
     statusError,
+    taskUsers,
+    usersError,
     tasksTable,
     filterTitle,
     filterStatus,
@@ -30,20 +32,30 @@ import {
     createTask,
     updateTask,
     deleteTask,
-    filterTasksList,
     renderFilteredTasks,
     isValidInput,
-    getStatusLabel,
     setTextContent,
     setInnerHtml,
-    handleError,
-    tasksOrderBar,
+    apiUrl,
     sortTasks,
     extractTasksFromDOM,
 } from "./src/index.js";
 toggleTaskForm(true);
 
 let allTasks = [];
+
+const loadUsers = async () => {
+    try {
+        const res = await fetch(apiUrl);
+        const users = await res.json();
+        taskUsers.innerHTML = users.map(u =>
+            `<option value="${u.id}">${u.name}</option>`
+        ).join("");
+    } catch {
+        taskUsers.innerHTML = "<option value=\"\">Error al cargar usuarios</option>";
+    }
+};
+loadUsers();
 
 // ============================================
 // EVENTO BUSCAR USUARIO
@@ -103,6 +115,7 @@ taskForm.addEventListener("submit", async (event) => {
     setTextContent(titleError, "");
     setTextContent(descError, "");
     setTextContent(statusError, "");
+    setTextContent(usersError, "");
 
     if (!isValidInput(title)) {
         setTextContent(titleError, "Debe ingresar un título");
@@ -122,6 +135,14 @@ taskForm.addEventListener("submit", async (event) => {
         return;
     }
 
+    const selectedUserIds = Array.from(taskUsers.selectedOptions).map(o => o.value);
+
+    if (!selectedUserIds.length) {
+        setTextContent(usersError, "Debe seleccionar al menos un usuario");
+        showErrorMessage("Debe seleccionar al menos un usuario");
+        return;
+    }
+
     try {
         if (editingId) {
             const taskEdit = await updateTask(editingId, {
@@ -138,6 +159,7 @@ taskForm.addEventListener("submit", async (event) => {
 
             setEditingTaskId(null);
             taskForm.reset();
+            Array.from(taskUsers.options).forEach(o => o.selected = false);
             setTextContent(
                 taskForm.querySelector('button[type="submit"]'),
                 "Guardar Tarea",
@@ -145,7 +167,7 @@ taskForm.addEventListener("submit", async (event) => {
             showMessage("Tarea actualizada correctamente");
         } else {
             const taskSaved = await createTask({
-                userId: getCurrentUser().id,
+                userIds: selectedUserIds,
                 title,
                 description,
                 status,
@@ -154,6 +176,7 @@ taskForm.addEventListener("submit", async (event) => {
             allTasks.push(taskSaved);
             renderFilteredTasks(allTasks);
             taskForm.reset();
+            Array.from(taskUsers.options).forEach(o => o.selected = false);
             showMessage("Tarea registrada correctamente");
         }
     } catch (error) {
@@ -211,6 +234,30 @@ tasksTable.addEventListener("click", async (event) => {
         allTasks = allTasks.filter((t) => t.id != taskId);
         renderFilteredTasks(allTasks);
         showMessage("Tarea eliminada correctamente");
+    } catch (error) {
+        showErrorMessage(error.message);
+    }
+});
+
+// ============================================
+// EVENTO CAMBIAR ESTADO DESDE TARJETA
+// ============================================
+tasksTable.addEventListener("click", async (event) => {
+    const btnStatus = event.target.closest(".btn-status");
+    if (!btnStatus) return;
+
+    const taskId = btnStatus.getAttribute("data-id");
+    const newStatus = btnStatus.getAttribute("data-status");
+    const card = btnStatus.closest(".message-card");
+
+    try {
+        const updated = await updateTask(taskId, { status: newStatus });
+        const index = allTasks.findIndex((t) => t.id == updated.id);
+        if (index !== -1) {
+            allTasks[index] = updated;
+        }
+        renderFilteredTasks(allTasks);
+        showMessage("Estado actualizado correctamente");
     } catch (error) {
         showErrorMessage(error.message);
     }
