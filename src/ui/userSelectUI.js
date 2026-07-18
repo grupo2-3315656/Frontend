@@ -2,8 +2,11 @@ import { usersApi } from "../api/usersApi.js";
 import { taskUsers, selectedUsersContainer } from "../services/config.js";
 
 let selectedUsers = [];
+let loaded = false;
 
-export const loadUsers = async () => {
+const loadUsers = async () => {
+    if (loaded) return;
+    loaded = true;
     try {
         const users = await usersApi.get();
         taskUsers.innerHTML = `<option value="">Asignar a usuarios</option>` +
@@ -22,6 +25,11 @@ export const clearSelectedUsers = () => {
     updateSelectedUsers();
 };
 
+export const setSelectedUsers = (users) => {
+    selectedUsers = users.map(u => ({ id: u.id, name: u.name }));
+    updateSelectedUsers();
+};
+
 const updateSelectedUsers = () => {
     selectedUsersContainer.innerHTML = selectedUsers.map(u =>
         `<span class="user-chip" data-initial="${u.name.charAt(0).toUpperCase()}">
@@ -30,6 +38,8 @@ const updateSelectedUsers = () => {
         </span>`
     ).join("");
 };
+
+taskUsers.addEventListener("focus", loadUsers);
 
 taskUsers.addEventListener("change", () => {
     const option = taskUsers.selectedOptions[0];

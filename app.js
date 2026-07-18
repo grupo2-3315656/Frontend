@@ -42,11 +42,11 @@ import {
     tasksOrderBar,
     sortTasks,
     extractTasksFromDOM,
-    loadUsers,
     getSelectedUserIds,
     clearSelectedUsers,
+    setSelectedUsers,
 } from "./src/index.js";
-loadUsers();
+import { assignmentsApi } from "./src/api/assignments.js";
 
 let allTasks = [];
 
@@ -180,7 +180,7 @@ taskForm.addEventListener("submit", async (event) => {
 // ============================================
 // EVENTO EDITAR TAREA
 // ============================================
-tasksTable.addEventListener("click", (event) => {
+tasksTable.addEventListener("click", async (event) => {
     const btnUpdate = event.target.closest(".btnUpdate");
     if (!btnUpdate) return;
 
@@ -204,6 +204,11 @@ tasksTable.addEventListener("click", (event) => {
     taskStatus.value = "";
 
     setEditingTaskId(taskId);
+
+    try {
+        const users = await assignmentsApi.getByTaskId(taskId);
+        setSelectedUsers(users);
+    } catch {}
 
     const submitBtn = taskForm.querySelector('button[type="submit"]');
     setTextContent(submitBtn, "Actualizar Tarea");
