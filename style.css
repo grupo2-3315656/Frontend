@@ -255,6 +255,21 @@ body {
     margin-right: 2px;
 }
 
+.user-chip__remove {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--color-gray-400);
+    padding: 0 2px;
+    transition: color var(--transition-fast);
+}
+
+.user-chip__remove:hover {
+    color: var(--color-error);
+}
+
 .form__input:focus {
     border-color: var(--color-primary);
     box-shadow: 0 0 0 3px var(--color-primary-lighter);

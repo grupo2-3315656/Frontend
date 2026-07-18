@@ -18,8 +18,22 @@ const updateSelectedUsers = () => {
         name: o.textContent,
     }));
     selectedUsersContainer.innerHTML = selected.map(u =>
-        `<span class="user-chip" data-initial="${u.name.charAt(0).toUpperCase()}">${u.name}</span>`
+        `<span class="user-chip" data-initial="${u.name.charAt(0).toUpperCase()}">
+            ${u.name}
+            <button type="button" class="user-chip__remove" data-value="${u.id}">&times;</button>
+        </span>`
     ).join("");
 };
+
+selectedUsersContainer.addEventListener("click", (e) => {
+    const btn = e.target.closest(".user-chip__remove");
+    if (!btn) return;
+
+    const option = Array.from(taskUsers.options).find(o => o.value === btn.dataset.value);
+    if (option) {
+        option.selected = false;
+        taskUsers.dispatchEvent(new Event("change"));
+    }
+});
 
 taskUsers.addEventListener("change", updateSelectedUsers);
