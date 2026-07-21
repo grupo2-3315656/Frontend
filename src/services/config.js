@@ -47,3 +47,24 @@ export const userTasksSection = document.getElementById("user-tasks-section");
 export const taskUsers = document.getElementById("task-users");
 export const usersError = document.getElementById("users-error");
 export const selectedUsersContainer = document.getElementById("selected-users");
+
+// Navegación por tabs
+export const navTabs = document.querySelectorAll(".nav__tab");
+export const viewUsers = document.getElementById("view-users");
+export const viewAdmin = document.getElementById("view-admin");
+export const viewTasks = document.getElementById("view-tasks");
+
+// Vista Usuarios
+export const userForm = document.getElementById("user-form");
+export const userFormName = document.getElementById("user-form-name");
+export const userFormEmail = document.getElementById("user-form-email");
+export const userFormNameError = document.getElementById("user-form-name-error");
+export const userFormEmailError = document.getElementById("user-form-email-error");
+export const usersTableContainer = document.getElementById("users-table");
+export const userFormSubmitBtn = document.getElementById("user-form-submit");
+
+// Vista Admin
+export const adminTasksContainer = document.getElementById("admin-tasks-container");
+export const adminTaskCount = document.getElementById("admin-task-count");
+export const adminFilterStatus = document.getElementById("admin-filter-status");
+export const adminFilterUser = document.getElementById("admin-filter-user");

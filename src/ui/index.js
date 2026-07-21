@@ -10,3 +10,5 @@ export { setInnerHtml } from "./setInnerHtml.js";
 export { setTextContent } from "./setTextContent.js";
 export { handleExportTasks } from "./exportTasksUI.js";
 export { getSelectedUserIds, clearSelectedUsers, setSelectedUsers } from "./userSelectUI.js";
+export { renderUsersTable } from "./usersTable.js";
+export { renderAdminTasks } from "./adminTasksTable.js";

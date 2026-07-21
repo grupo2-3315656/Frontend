@@ -1,6 +1,8 @@
 import { tasksApi } from "../api/tasksApi.js";
 import { assignmentsApi } from "../api/assignments.js";
 
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export const createTask = async (taskData) => {
     return await tasksApi.create(taskData);
 };
@@ -11,6 +13,7 @@ export const createTaskWithAssignments = async (taskData) => {
 
     for (const userId of userIds) {
         await assignmentsApi.create({ taskId: task.id, userId });
+        await delay(1000);
     }
 
     return task;
@@ -32,10 +35,12 @@ export const updateTaskWithAssignments = async (taskId, taskData) => {
 
     for (const userId of toAdd) {
         await assignmentsApi.create({ taskId, userId });
+        await delay(1000);
     }
 
     for (const assignment of toRemove) {
         await assignmentsApi.delete(assignment.id);
+        await delay(1000);
     }
 
     return await tasksApi.update(taskId, taskPayload);

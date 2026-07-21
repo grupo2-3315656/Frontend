@@ -6,7 +6,10 @@ export const fetchApi = async (url, options = {}) => {
         throw new Error("Servicio no disponible");
     }
 
-    if (response.ok) return response.json();
+    if (response.ok) {
+        const data = await response.json();
+        return data;
+    }
 
     let message = `Error (Código: ${response.status})`;
     try {
