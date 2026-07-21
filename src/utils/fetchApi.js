@@ -6,8 +6,6 @@ export const fetchApi = async (url, options = {}) => {
         throw new Error("Servicio no disponible");
     }
 
-    console.log("📨 Response status:", response.status);
-
     if (response.ok) {
         const data = await response.json();
         return data;
