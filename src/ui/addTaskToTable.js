@@ -63,6 +63,13 @@ export const addTaskToTable = (task) => {
             <div class="message-card__content">
                 ${task.description || "Sin descripción"}
             </div>
+            ${
+                task.status !== "completada"
+                    ? `<button type="button" class="btn btn--success btnComplete" data-id="${task.id}">
+                        Completar
+                    </button>`
+                    : ""
+            }
             <button type="button" class="btn btn--secondary btnUpdate" data-id="${task.id}">
                 Actualizar
             </button>
