@@ -10,7 +10,8 @@ export const createTaskWithAssignments = async (taskData) => {
     const task = await tasksApi.create(taskPayload);
 
     for (const userId of userIds) {
-        await assignmentsApi.create({ taskId: task.id, userId });
+        const assignmentBody = { taskId: task.id, userId };
+        await assignmentsApi.create(assignmentBody);
     }
 
     return task;

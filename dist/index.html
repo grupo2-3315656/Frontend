@@ -1,10 +1,11 @@
 <!doctype html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Grupo 2</title>
-  <script type="module" crossorigin src="/assets/index-D7lf_vyT.js"></script>
+  <script type="module" crossorigin src="/assets/index-BHufXXny.js"></script>
   <link rel="stylesheet" crossorigin href="/assets/index-yz09KRp2.css">
 </head>
 
@@ -98,13 +99,11 @@
                     </div>
                 </div>
 
-                <div class="card">
-                    <div class="messages-container" id="admin-tasks-container">
-                        <div class="messages-empty">
-                            <div class="messages-empty__icon">📋</div>
-                            <p class="messages-empty__text">No hay tareas registradas</p>
-                            <p class="messages-empty__subtext">No se encontraron tareas en el sistema.</p>
-                        </div>
+                <div class="messages-container" id="admin-tasks-container">
+                    <div class="messages-empty">
+                        <div class="messages-empty__icon">📋</div>
+                        <p class="messages-empty__text">No hay tareas registradas</p>
+                        <p class="messages-empty__subtext">No se encontraron tareas en el sistema.</p>
                     </div>
                 </div>
             </section>
@@ -118,7 +117,8 @@
                 <h2 class="card__title">Consultar Usuario</h2>
                 <div class="form__group">
                     <label for="user-doc" class="form__label">Documento del Usuario</label>
-                    <input type="text" id="user-doc" class="form__input" placeholder="Ingrese documento para buscar..." />
+                    <input type="text" id="user-doc" class="form__input"
+                        placeholder="Ingrese documento para buscar..." />
                     <span id="search-error" class="form__error"></span>
                 </div>
                 <button type="button" class="btn btn--primary" id="btn-search">
@@ -174,12 +174,13 @@
                     </div>
                 </div>
 
-                <section id="user-tasks-section" class="card" style="display: none;">
+                <section id="user-tasks-section" style="display: none;">
                     <div class="messages-header">
-                        <h2 class="card__title" style="margin-bottom:0;">Tareas del Usuario</h2>
+                        <h2 class="messages-header__title">Tareas del Usuario</h2>
                         <div class="messages-header__actions">
                             <span class="messages-header__count" id="task-count">0 Tareas</span>
-                            <button type="button" class="btn btn--primary btn--sm" id="btn-export">📥 Exportar JSON</button>
+                            <button type="button" class="btn btn--primary btn--sm" id="btn-export">📥 Exportar
+                                JSON</button>
                         </div>
                     </div>
 
@@ -189,7 +190,8 @@
                         </div>
                         <div style="display:flex; gap:var(--spacing-md); flex-wrap:wrap;">
                             <div class="form__group" style="flex:2; margin-bottom:0; min-width:200px;">
-                                <input type="text" id="filter-title" class="form__input" placeholder="Buscar por título...">
+                                <input type="text" id="filter-title" class="form__input"
+                                    placeholder="Buscar por título...">
                             </div>
                             <div class="form__group" style="flex:1; margin-bottom:0; min-width:150px;">
                                 <select id="filter-status" class="form__input">
@@ -202,13 +204,11 @@
                         </div>
                     </div>
 
-                    <div class="card">
-                        <div class="messages-container" id="tasks-table">
-                            <div class="messages-empty">
-                                <div class="messages-empty__icon">📋</div>
-                                <p class="messages-empty__text">No hay tareas registradas</p>
-                                <p class="messages-empty__subtext">Busque un usuario para ver su listado.</p>
-                            </div>
+                    <div class="messages-container" id="tasks-table">
+                        <div class="messages-empty">
+                            <div class="messages-empty__icon">📋</div>
+                            <p class="messages-empty__text">No hay tareas registradas</p>
+                            <p class="messages-empty__subtext">Busque un usuario para ver su listado.</p>
                         </div>
                     </div>
                 </section>
@@ -220,4 +220,5 @@
         </footer>
     </div>
 </body>
+
 </html>
