@@ -23,7 +23,6 @@ import {
     toggleTaskForm,
     clearTasks,
     showUserInfo,
-    addTaskToTable,
     showMessage,
     showErrorMessage,
     showEmptyTasks,
@@ -34,15 +33,11 @@ import {
     updateTask,
     updateTaskWithAssignments,
     deleteTask,
-    filterTasksList,
-    filterAdminTasks,
     renderFilteredTasks,
+    loadAllTasks,
     isValidInput,
-    getStatusLabel,
     setTextContent,
     setInnerHtml,
-    handleError,
-    tasksOrderBar,
     sortTasks,
     extractTasksFromDOM,
     getSelectedUserIds,
@@ -50,30 +45,25 @@ import {
     setSelectedUsers,
     assignmentsApi,
     navTabs,
-    viewUsers,
-    viewAdmin,
-    viewTasks,
     userForm,
     userFormName,
     userFormEmail,
     userFormNameError,
     userFormEmailError,
-    usersTableContainer,
     userFormSubmitBtn,
-    adminTasksContainer,
-    adminTaskCount,
     adminFilterStatus,
     adminFilterUser,
-    taskCount,
     getAllUsers,
     createUser,
     updateUser,
     deleteUser,
+    switchView,
+    loadUsers as loadUsersService,
+    handleEditUser as handleEditUserService,
+    handleDeleteUser as handleDeleteUserService,
+    loadAdminTasks as loadAdminTasksService,
+    renderFilteredAdminTasks as renderFilteredAdminTasksService,
 } from "./src/index.js";
-
-import { getAllTasksWithUsers } from "./src/services/adminService.js";
-import { renderUsersTable } from "./src/ui/usersTable.js";
-import { renderAdminTasks } from "./src/ui/adminTasksTable.js";
 
 let allTasks = [];
 let allUsers = [];
@@ -83,59 +73,42 @@ let adminAllTasks = [];
 // ============================================
 // NAVEGACIÓN POR TABS
 // ============================================
-function switchView(viewId) {
-    document.querySelectorAll(".view").forEach((v) => {
-        v.style.display = "none";
-    });
-    navTabs.forEach((tab) => {
-        tab.classList.remove("nav__tab--active");
-    });
+const onLoadUsers = () => loadUsers();
+const onLoadAdminTasks = async () => { adminAllTasks = await loadAdminTasks(); };
+const onLoadAllTasks = async () => { allTasks = await loadAllTasks(); };
 
-    const targetView = document.getElementById(viewId);
-    if (targetView) {
-        targetView.style.display = "";
-    }
-
-    const activeTab = document.querySelector(`[data-view="${viewId}"]`);
-    if (activeTab) {
-        activeTab.classList.add("nav__tab--active");
-    }
-
-    if (viewId === "view-users") {
-        loadUsers();
-    } else if (viewId === "view-admin") {
-        loadAdminTasks();
-    } else if (viewId === "view-tasks") {
-        loadAllTasks();
-    }
-}
+const onSwitchView = (viewId) => {
+    switchView({ viewId, onLoadUsers, onLoadAdminTasks, onLoadAllTasks });
+};
 
 navTabs.forEach((tab) => {
     tab.addEventListener("click", () => {
-        const viewId = tab.getAttribute("data-view");
-        switchView(viewId);
+        onSwitchView(tab.getAttribute("data-view"));
     });
 });
 
 // ============================================
 // MÓDULO DE USUARIOS - CARGAR USUARIOS
 // ============================================
-async function loadUsers() {
-    try {
-        allUsers = await getAllUsers();
-        const usersArray = Array.isArray(allUsers) ? allUsers : [];
-        const countEl = document.getElementById("users-count");
-        if (countEl) {
-            countEl.textContent = `${usersArray.length} Usuarios`;
-        }
-        renderUsersTable(usersArray, usersTableContainer, {
-            onEdit: handleEditUser,
-            onDelete: handleDeleteUser,
-        });
-    } catch (error) {
-        showErrorMessage(error.message);
-    }
-}
+const loadUsers = async () => {
+    allUsers = await loadUsersService({
+        getAllUsers,
+        onEdit: handleEditUser,
+        onDelete: handleDeleteUser,
+    });
+};
+
+const handleEditUser = (user) => {
+    editingUserId = handleEditUserService(user);
+};
+
+const handleDeleteUser = async (userId) => {
+    await handleDeleteUserService({
+        userId,
+        deleteUser,
+        onDeleted: loadUsers,
+    });
+};
 
 // ============================================
 // MÓDULO DE USUARIOS - CREAR / ACTUALIZAR
@@ -184,92 +157,20 @@ userForm.addEventListener("submit", async (event) => {
     }
 });
 
-function handleEditUser(user) {
-    editingUserId = user.id;
-    userFormName.value = user.name;
-    userFormEmail.value = user.email || "";
-    setTextContent(userFormSubmitBtn, "Actualizar Usuario");
-    setTextContent(
-        document.getElementById("user-form-title"),
-        "Actualizar Usuario",
-    );
-    userForm.scrollIntoView({ behavior: "smooth", block: "center" });
-    userFormName.focus();
-}
-
-async function handleDeleteUser(userId) {
-    try {
-        await deleteUser(userId);
-        showMessage("Usuario eliminado correctamente");
-        loadUsers();
-    } catch (error) {
-        showErrorMessage(error.message);
-    }
-}
-
 // ============================================
 // VISTA ADMIN - CARGAR TODAS LAS TAREAS
 // ============================================
-async function loadAdminTasks() {
-    try {
-        adminAllTasks = await getAllTasksWithUsers();
-        const tasksArray = Array.isArray(adminAllTasks) ? adminAllTasks : [];
-        adminTaskCount.textContent = `${tasksArray.length} Tareas`;
+const loadAdminTasks = async () => {
+    adminAllTasks = await loadAdminTasksService();
+    return adminAllTasks;
+};
 
-        const usersSet = {};
-        tasksArray.forEach((task) => {
-            (task.assignedUsers || []).forEach((u) => {
-                usersSet[u.id] = u;
-            });
-        });
-        const uniqueUsers = Object.values(usersSet);
-
-        adminFilterUser.innerHTML =
-            '<option value="todos">Todos los usuarios</option>';
-        uniqueUsers.forEach((u) => {
-            const opt = document.createElement("option");
-            opt.value = u.id;
-            opt.textContent = u.name;
-            adminFilterUser.appendChild(opt);
-        });
-
-        renderAdminTasks(tasksArray, adminTasksContainer);
-    } catch (error) {
-        showErrorMessage(error.message);
-    }
-}
-
-function renderFilteredAdminTasks() {
-    const statusVal = adminFilterStatus.value;
-    const userVal = adminFilterUser.value;
-    const filtered = filterAdminTasks(adminAllTasks, statusVal, userVal);
-    adminTaskCount.textContent = `${filtered.length} Tareas`;
-    renderAdminTasks(filtered, adminTasksContainer);
-}
+const renderFilteredAdminTasks = () => {
+    renderFilteredAdminTasksService(adminAllTasks);
+};
 
 adminFilterStatus.addEventListener("change", renderFilteredAdminTasks);
 adminFilterUser.addEventListener("change", renderFilteredAdminTasks);
-
-// ============================================
-// VISTA TAREAS - CARGAR TODAS LAS TAREAS
-// ============================================
-async function loadAllTasks() {
-    try {
-        allTasks = await getAllTasksWithUsers();
-        const tasksArray = Array.isArray(allTasks) ? allTasks : [];
-        taskCount.textContent = `${tasksArray.length} Tareas`;
-        userTasksSection.style.display = "";
-
-        if (tasksArray.length > 0) {
-            renderFilteredTasks(allTasks);
-        } else {
-            clearTasks();
-            showEmptyTasks();
-        }
-    } catch (error) {
-        showErrorMessage(error.message);
-    }
-}
 
 // ============================================
 // EVENTO BUSCAR USUARIO
@@ -310,7 +211,7 @@ btnSearch.addEventListener("click", async () => {
         `,
         );
         showErrorMessage(error.message);
-        loadAllTasks();
+        allTasks = await loadAllTasks();
         console.error(error);
     }
 });
@@ -359,7 +260,7 @@ taskForm.addEventListener("submit", async (event) => {
 
     try {
         if (editingId) {
-            const taskEdit = await updateTaskWithAssignments(editingId, {
+            await updateTaskWithAssignments(editingId, {
                 userIds: selectedUserIds,
                 title,
                 description,
@@ -374,7 +275,7 @@ taskForm.addEventListener("submit", async (event) => {
                 "Guardar Tarea",
             );
             showMessage("Tarea actualizada correctamente");
-            await loadAllTasks();
+            allTasks = await loadAllTasks();
         } else {
             await createTaskWithAssignments({
                 userIds: selectedUserIds,
@@ -386,7 +287,7 @@ taskForm.addEventListener("submit", async (event) => {
             taskForm.reset();
             clearSelectedUsers();
             showMessage("Tarea registrada correctamente");
-            await loadAllTasks();
+            allTasks = await loadAllTasks();
         }
     } catch (error) {
         showErrorMessage(error.message);
@@ -444,7 +345,7 @@ tasksTable.addEventListener("click", async (event) => {
     try {
         await deleteTask(taskId);
         showMessage("Tarea eliminada correctamente");
-        await loadAllTasks();
+        allTasks = await loadAllTasks();
     } catch (error) {
         showErrorMessage(error.message);
     }
@@ -463,7 +364,7 @@ tasksTable.addEventListener("click", async (event) => {
     try {
         await updateTask(taskId, { status: "completada" });
         showMessage("Tarea marcada como completada");
-        await loadAllTasks();
+        allTasks = await loadAllTasks();
     } catch (error) {
         showErrorMessage(error.message);
     }
