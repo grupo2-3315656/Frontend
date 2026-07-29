@@ -1,10 +1,4 @@
-import {
-    tasksTable,
-    taskCount,
-    getCurrentUser,
-    incrementTotalTasks,
-    getTotalTasks,
-} from "../services/config.js";
+import { tasksTable, taskCount, incrementTotalTasks, getTotalTasks } from "../services/config.js";
 import { getStatusLabel } from "../utils/index.js";
 
 // ============================================
@@ -26,12 +20,12 @@ export const addTaskToTable = (task) => {
     if (task.date) {
         taskCard.dataset.date = task.date;
     }
+    console.log(task);
 
     const statusText = getStatusLabel(task.status);
-
-    const currentUser = getCurrentUser();
-    const userName = currentUser?.name || "Usuario";
-    const userInitial = userName.charAt(0).toUpperCase();
+    const assignedUsers = task.assignedUsers || [];
+    const usersList = assignedUsers.map((u) => u.name).join(", ");
+    const userInitial = assignedUsers.length > 0 ? usersList.charAt(0).toUpperCase() : task.title.charAt(0).toUpperCase();
 
     taskCard.innerHTML = `
     
@@ -44,12 +38,10 @@ export const addTaskToTable = (task) => {
 
                 <div>
                     <div class="message-card__username">
-                        ${userName}
-                    </div>
-                    
-                    <div class="message-card__title">
                         ${task.title}
                     </div>
+                    
+                    ${assignedUsers.length > 0 ? `<div class="message-card__title">Asignado: ${usersList}</div>` : ""}
                 </div>
             </div>
 

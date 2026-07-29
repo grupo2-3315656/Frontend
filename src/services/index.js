@@ -6,3 +6,4 @@ export { renderFilteredTasks } from "./renderService.js";
 export { getAllUsers, createUser, updateUser, deleteUser } from "./userAdminService.js";
 export { getAllTasksWithUsers } from "./adminService.js";
 export * from "./config.js";
+export * from "./userAdminService.js"

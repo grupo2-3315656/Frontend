@@ -64,14 +64,12 @@ import {
     adminTaskCount,
     adminFilterStatus,
     adminFilterUser,
-} from "./src/index.js";
-
-import {
+    taskCount,
     getAllUsers,
     createUser,
     updateUser,
     deleteUser,
-} from "./src/services/userAdminService.js";
+} from "./src/index.js";
 
 import { getAllTasksWithUsers } from "./src/services/adminService.js";
 import { renderUsersTable } from "./src/ui/usersTable.js";
@@ -107,6 +105,8 @@ function switchView(viewId) {
         loadUsers();
     } else if (viewId === "view-admin") {
         loadAdminTasks();
+    } else if (viewId === "view-tasks") {
+        loadAllTasks();
     }
 }
 
@@ -251,6 +251,27 @@ adminFilterStatus.addEventListener("change", renderFilteredAdminTasks);
 adminFilterUser.addEventListener("change", renderFilteredAdminTasks);
 
 // ============================================
+// VISTA TAREAS - CARGAR TODAS LAS TAREAS
+// ============================================
+async function loadAllTasks() {
+    try {
+        allTasks = await getAllTasksWithUsers();
+        const tasksArray = Array.isArray(allTasks) ? allTasks : [];
+        taskCount.textContent = `${tasksArray.length} Tareas`;
+        userTasksSection.style.display = "";
+
+        if (tasksArray.length > 0) {
+            renderFilteredTasks(allTasks);
+        } else {
+            clearTasks();
+            showEmptyTasks();
+        }
+    } catch (error) {
+        showErrorMessage(error.message);
+    }
+}
+
+// ============================================
 // EVENTO BUSCAR USUARIO
 // ============================================
 btnSearch.addEventListener("click", async () => {
@@ -282,7 +303,6 @@ btnSearch.addEventListener("click", async () => {
         }
     } catch (error) {
         toggleTaskForm(true);
-        userTasksSection.style.display = "none";
         setInnerHtml(
             userInfoDisplay,
             `
@@ -290,8 +310,7 @@ btnSearch.addEventListener("click", async () => {
         `,
         );
         showErrorMessage(error.message);
-        clearTasks();
-        showEmptyTasks();
+        loadAllTasks();
         console.error(error);
     }
 });
@@ -347,12 +366,6 @@ taskForm.addEventListener("submit", async (event) => {
                 status,
             });
 
-            const index = allTasks.findIndex((t) => t.id == taskEdit.id);
-            if (index !== -1) {
-                allTasks[index] = taskEdit;
-            }
-            renderFilteredTasks(allTasks);
-
             setEditingTaskId(null);
             taskForm.reset();
             clearSelectedUsers();
@@ -361,19 +374,19 @@ taskForm.addEventListener("submit", async (event) => {
                 "Guardar Tarea",
             );
             showMessage("Tarea actualizada correctamente");
+            await loadAllTasks();
         } else {
-            const taskSaved = await createTaskWithAssignments({
+            await createTaskWithAssignments({
                 userIds: selectedUserIds,
                 title,
                 description,
                 status,
             });
 
-            allTasks.push(taskSaved);
-            renderFilteredTasks(allTasks);
             taskForm.reset();
             clearSelectedUsers();
             showMessage("Tarea registrada correctamente");
+            await loadAllTasks();
         }
     } catch (error) {
         showErrorMessage(error.message);
@@ -394,10 +407,8 @@ tasksTable.addEventListener("click", async (event) => {
     if (!currentCard) return;
 
     const currentTitleText = setTextContent(
-        currentCard.querySelector(".message-card__title"),
-    )
-        .replace("Tarea: ", "")
-        .trim();
+        currentCard.querySelector(".message-card__username"),
+    ).trim();
     const currentDescText = setTextContent(
         currentCard.querySelector(".message-card__content"),
     ).trim();
@@ -432,9 +443,8 @@ tasksTable.addEventListener("click", async (event) => {
 
     try {
         await deleteTask(taskId);
-        allTasks = allTasks.filter((t) => t.id != taskId);
-        renderFilteredTasks(allTasks);
         showMessage("Tarea eliminada correctamente");
+        await loadAllTasks();
     } catch (error) {
         showErrorMessage(error.message);
     }
@@ -452,12 +462,8 @@ tasksTable.addEventListener("click", async (event) => {
 
     try {
         await updateTask(taskId, { status: "completada" });
-        const task = allTasks.find((t) => t.id == taskId);
-        if (task) {
-            task.status = "completada";
-        }
-        renderFilteredTasks(allTasks);
         showMessage("Tarea marcada como completada");
+        await loadAllTasks();
     } catch (error) {
         showErrorMessage(error.message);
     }
