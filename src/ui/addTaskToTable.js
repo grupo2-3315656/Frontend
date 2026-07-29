@@ -20,7 +20,6 @@ export const addTaskToTable = (task) => {
     if (task.date) {
         taskCard.dataset.date = task.date;
     }
-    console.log(task);
 
     const statusText = getStatusLabel(task.status);
     const assignedUsers = task.assignedUsers || [];
