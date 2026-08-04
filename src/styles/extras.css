@@ -1,0 +1,38 @@
+/* ============================================
+   UTILIDADES Y SELECTORES ESPECÍFICOS
+   ============================================ */
+
+.text-center {
+    text-align: center;
+}
+
+.btn--oval {
+    border-radius: var(--radius-full);
+    padding: var(--spacing-md) var(--spacing-3xl);
+}
+
+.btn--success {
+    background-color: var(--color-success);
+    color: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.btn--success:hover {
+    background-color: #059669;
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.btn--success:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
+}
+
+.user-card__date {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-tertiary);
+}
+
+#user-info-display {
+    margin-bottom: var(--spacing-md);
+}
