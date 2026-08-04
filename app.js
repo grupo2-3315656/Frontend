@@ -103,6 +103,7 @@ const handleEditUser = (user) => {
 };
 
 const handleDeleteUser = async (userId) => {
+    if (!confirm("¿Estás seguro de que deseas eliminar este usuario?")) return;
     await handleDeleteUserService({
         userId,
         deleteUser,
@@ -341,6 +342,8 @@ tasksTable.addEventListener("click", async (event) => {
 
     event.preventDefault();
     const taskId = btnDelete.getAttribute("data-id");
+
+    if (!confirm("¿Estás seguro de que deseas eliminar esta tarea?")) return;
 
     try {
         await deleteTask(taskId);
