@@ -1,0 +1,28 @@
+/* ============================================
+   BADGES DE ESTADO DE TAREA
+   ============================================ */
+
+.task-badge {
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.task-badge--pendiente {
+    background-color: #f59e0b;
+}
+
+.task-badge--en-progreso {
+    background-color: #3b82f6;
+}
+
+.task-badge--completada {
+    background-color: #10b981;
+}
+
+.task-badge--sin-estado {
+    background-color: #6b7280;
+}

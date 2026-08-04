@@ -1,0 +1,85 @@
+/* ============================================
+   NOTIFICACIONES (TOAST)
+   ============================================ */
+
+#notifications-container {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 1100;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 360px;
+    width: 100%;
+    pointer-events: none;
+}
+
+.notification {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 24px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    border-left: 4px solid #9ca3af;
+    animation: notificationIn 300ms ease-out forwards;
+    pointer-events: auto;
+    transition: box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.notification:hover {
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.notification--success {
+    border-left-color: #10b981;
+}
+
+.notification--error {
+    border-left-color: #ef4444;
+}
+
+.notification--info {
+    border-left-color: #3b82f6;
+}
+
+.notification__icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    line-height: 1;
+}
+
+.notification__message {
+    flex: 1;
+    font-size: 0.875rem;
+    color: #111827;
+    line-height: 1.4;
+}
+
+.notification--dismissing {
+    animation: notificationOut 200ms ease-in forwards;
+}
+
+@keyframes notificationIn {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes notificationOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
