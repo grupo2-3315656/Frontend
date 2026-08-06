@@ -220,77 +220,97 @@ btnSearch.addEventListener("click", async () => {
 // ============================================
 // EVENTO CREAR O ACTUALIZAR TAREA
 // ============================================
-// taskForm es el formulario de tareas (traído desde config.js).
-// Con addEventListener le pedimos que "escuche" el evento submit:
-// cada vez que se le da clic al botón de enviar, se dispara esta
-// función. Es async porque por dentro va a hacer peticiones (await).
+// taskForm es el formulario de tareas (la referencia al <form> viene de
+// config.js). Con addEventListener le agregamos un "listener" (un oyente)
+// del evento submit: cada vez que se pulsa el botón de enviar, se dispara
+// esta función. Es async porque por dentro va a esperar peticiones con
+// await, y recibe "event", que trae la información del envío.
 taskForm.addEventListener("submit", async (event) => {
-    // Lo primero es frenar el comportamiento por defecto del navegador,
-    // que sería recargar la página completa al hacer submit. Con
-    // preventDefault evitamos eso y manejamos todo desde JavaScript.
+    // event.preventDefault() le dice al navegador: "no hagas lo que harías
+    // por defecto", que sería recargar la página completa al hacer submit.
+    // Así el envío lo controlamos nosotros desde JavaScript sin recargar.
     event.preventDefault();
 
-    // Acá leemos lo que escribió el usuario en el formulario:
-    // título, descripción y estado. El .trim() quita los espacios
-    // en blanco de los extremos para no guardar basura.
+    // taskTitle.value toma lo que el usuario escribió en el input del
+    // título. El .trim() le quita los espacios de los lados y el resultado
+    // se guarda en la variable "title" para validarlo y mandarlo después.
     const title = taskTitle.value.trim();
+    // Igual que el título: taskDesc.value lee el textarea de la descripción,
+    // .trim() lo limpia y queda guardado en "description".
     const description = taskDesc.value.trim();
+    // taskStatus.value lee la opción que se eligió en el select del estado
+    // (pendiente / en progreso / completada) y queda en "status".
     const status = taskStatus.value;
 
-    // getEditingTaskId() nos dice si estamos editando o creando:
-    // - si devuelve null  => el formulario está en modo crear.
-    // - si devuelve un id => ya existe una tarea y la estamos actualizando.
+    // getEditingTaskId() devuelve lo que esté guardado en la memoria del
+    // proyecto (config.js). Si devuelve null, el formulario está en modo
+    // crear; si devuelve un id, ese es el de la tarea a actualizar.
     const editingId = getEditingTaskId();
 
-    // Acá tomamos los usuarios que se marcaron para asignar la tarea.
-    // getSelectedUserIds() lee el estado interno (userSelectUI.js)
-    // de los chips de usuarios seleccionados y solo devuelve sus ids.
+    // getSelectedUserIds() lee el estado interno de los usuarios marcados
+    // (userSelectUI.js) y devuelve solo sus ids en un arreglo. Se usan
+    // después para asignarle la tarea a esos usuarios.
     const selectedUserIds = getSelectedUserIds();
 
-    // Limpiamos los mensajes de error de una validación anterior,
-    // para que no queden avisos viejos en pantalla mientras se envía.
+    // setTextContent(elemento, "") escribe un texto en el elemento: acá lo
+    // dejamos vacío, o sea se borran los mensajes de error que hayan quedado
+    // de una validación anterior (título, descripción, estado y usuarios).
     setTextContent(titleError, "");
     setTextContent(descError, "");
     setTextContent(statusError, "");
     setTextContent(usersError, "");
 
-    // Vamos validando campo por campo con isValidInput(), que
-    // devuelve true solo si el valor llegó sin estar vacío.
-    // Si falta el dato, mostramos el error debajo del input,
-    // lanzamos una notificación y cortamos con return (no sigue).
+    // if (!isValidInput(title)) es "si el título NO es válido". isValidInput()
+    // devuelve true solo cuando el valor no está vacío; el "!" invierte esa
+    // respuesta, así que la condición se cumple cuando el título está vacío.
+    // De cumplirse: se escribe el aviso debajo del input (setTextContent),
+    // se lanza un toast de error (showErrorMessage) y el return corta la
+    // función acá: nada de lo que sigue se ejecuta.
     if (!isValidInput(title)) {
+        // setTextContent escribe el mensaje dentro del elemento titleError,
+        // que es el <p> rojo que está debajo del input del título.
         setTextContent(titleError, "Debe ingresar un título");
+        // showErrorMessage manda una notificación (toast rojo) arriba.
         showErrorMessage("Debe ingresar un título");
+        // return detiene todo el flujo: no pasa a la validación que sigue.
         return;
     }
 
+    // Lo mismo para la descripción: si está vacía, avisa y corta el flujo.
     if (!isValidInput(description)) {
         setTextContent(descError, "Debe ingresar una descripción");
         showErrorMessage("Debe ingresar una descripción");
         return;
     }
 
+    // Y lo mismo para el estado: el select tiene que traer una opción elegida.
     if (!isValidInput(status)) {
         setTextContent(statusError, "Debe seleccionar un estado");
         showErrorMessage("Debe seleccionar un estado");
         return;
     }
 
-    // Hay que revisar también que se haya elegido mínimo un usuario,
-    // porque una tarea sin nadie asignado no se puede guardar.
+    // if (!selectedUserIds.length) revisa si el arreglo de ids está vacío.
+    // .length es la cantidad de elementos (0 si no se eligió nadie) y el "!"
+    // lo invierte, entonces entra cuando NO hay usuarios seleccionados:
+    // avisa que mínimo debe elegir uno y corta la función.
     if (!selectedUserIds.length) {
         setTextContent(usersError, "Debe seleccionar al menos un usuario");
         showErrorMessage("Debe seleccionar al menos un usuario");
         return;
     }
 
-    // Todo validado, ahora sí intentamos hacer la petición.
-    // El try nos permite capturar cualquier error que salte acá dentro.
+    // Todo pasó la validación. Dentro del try se intenta la petición y, si
+    // algo sale mal, el error queda capturado en el catch de abajo.
     try {
-        // ¿Estamos editando? Si editingId trae un valor, la tarea
-        // ya existía y lo que sigue es actualizarla. Le pasamos el id
-        // en el primer parámetro y el resto de datos en el segundo.
+        // if (editingId) pregunta "¿hay una tarea en edición?". Si editingId
+        // trae un id, el formulario está en modo editar y entramos acá.
         if (editingId) {
+            // await updateTaskWithAssignments(editingId, {...}) llama a la
+            // función que actualiza la tarea. El primer parámetro es el id
+            // de la tarea que se va a modificar; el segundo es un objeto con
+            // los datos: userIds (los usuarios a asignar), title, description
+            // y status. El await espera la respuesta del backend.
             await updateTaskWithAssignments(editingId, {
                 userIds: selectedUserIds,
                 title,
@@ -298,27 +318,35 @@ taskForm.addEventListener("submit", async (event) => {
                 status,
             });
 
-            // Ya terminó la petición. Ahora volvemos el formulario
-            // a su estado inicial para que no siga "pegado" en modo edición:
-            // 1) Limpiamos el id de edición para cerrar el modo editar.
+            // Ya respondió el backend. Ahora se hace la limpieza para que el
+            // formulario no quede "pegado" en modo edición:
+            // setEditingTaskId(null) borra el id guardado: el formulario
+            // vuelve a quedar en modo crear para el próximo registro.
             setEditingTaskId(null);
-            // 2) Reseteamos el formulario y quedan los inputs vacíos.
+            // taskForm.reset() resetea el formulario: borra todo lo que
+            // había en los inputs y los deja como nuevos.
             taskForm.reset();
-            // 3) Quitamos los chips de usuarios que estaban marcados.
+            // clearSelectedUsers() vacía los chips de usuarios marcados y
+            // deja la selección de usuarios en cero.
             clearSelectedUsers();
-            // 4) El botón vuelve a decir "Guardar Tarea".
+            // setTextContent(...) cambia el texto del botón de enviar:
+            // estaba en "Actualizar Tarea" y vuelve a "Guardar Tarea".
             setTextContent(
                 taskForm.querySelector('button[type="submit"]'),
                 "Guardar Tarea",
             );
-            // 5) Avisamos con una notificación de éxito...
+            // showMessage muestra una notificación de éxito (toast verde).
             showMessage("Tarea actualizada correctamente");
-            // 6) ...y recargamos las tareas para ver el cambio en la tabla.
+            // allTasks = await loadAllTasks() vuelve a pedir todas las tareas
+            // al backend (ya con el cambio aplicado) y se pinta la tabla de
+            // nuevo para que se vea la tarea actualizada.
             allTasks = await loadAllTasks();
         } else {
-            // Si editingId está vacío, no hay tarea vieja: es una tarea
-            // nueva, entonces entramos en modo creación y la mandamos
-            // junto con los usuarios a los que se va a asignar.
+            // else: si editingId no trae ningún id, no hay tarea en edición,
+            // entonces es una tarea nueva y entramos en modo creación.
+            // createTaskWithAssignments({...}) manda a guardar la tarea nueva
+            // con el objeto de datos: userIds son los ids de los usuarios a
+            // los que se le asigna y van title, description y status.
             await createTaskWithAssignments({
                 userIds: selectedUserIds,
                 title,
@@ -326,16 +354,17 @@ taskForm.addEventListener("submit", async (event) => {
                 status,
             });
 
-            // Igual que en actualizar, limpiamos el formulario y los
-            // usuarios marcados, avisamos el éxito y recargamos la tabla.
+            // Igual que en actualizar: se resetea el formulario, se limpian
+            // los usuarios asignados, se avisa el éxito y se recarga la tabla.
             taskForm.reset();
             clearSelectedUsers();
             showMessage("Tarea registrada correctamente");
             allTasks = await loadAllTasks();
         }
     } catch (error) {
-        // Si algo salió mal, mostramos un toast con el mensaje de error
-        // que regresó el servidor y no se rompe la aplicación.
+        // catch (error) captura el error si algo falló dentro del try.
+        // error.message es el mensaje que vino del backend y showErrorMessage
+        // lo muestra como toast de error para que el usuario sepa qué pasó.
         showErrorMessage(error.message);
     }
 });
