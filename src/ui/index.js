@@ -1,3 +1,11 @@
+// ===== BARREL UI =====
+// Ctrl+Enter aquí -> archivo real:
+//   showMessage / showErrorMessage / showInfoMessage -> notifications.js
+//   getSelectedUserIds / clearSelectedUsers / setSelectedUsers -> userSelectUI.js
+//   setTextContent -> setTextContent.js | setInnerHtml -> setInnerHtml.js
+//   toggleTaskForm -> toggleTaskForm.js | clearTasks -> clearTasks.js
+//   showEmptyTasks -> showEmptyTasks.js | addTaskToTable -> addTaskToTable.js
+//   showUserInfo -> showUserInfo.js | handleExportTasks -> exportTasksUI.js
 export { extractTasksFromDOM } from "./extractTasksFromDOM.js";
 export { tasksOrderBar } from "./taskOrderBar.js";
 export { toggleTaskForm } from "./toggleTaskForm.js";

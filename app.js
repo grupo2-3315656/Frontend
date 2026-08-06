@@ -220,19 +220,44 @@ btnSearch.addEventListener("click", async () => {
 // ============================================
 // EVENTO CREAR O ACTUALIZAR TAREA
 // ============================================
+// ===== BLOQUE 1: ESCUCHAR EL EVENTO SUBMIT =====
+// taskForm es el formulario de tareas (referenciado en config.js).
+// addEventListener("submit", ...) hace que el formulario "escuche"
+// el evento submit: cada vez que se pulsa el botón de enviar,
+// se ejecuta esta función (async para poder usar await).
 taskForm.addEventListener("submit", async (event) => {
+    // ===== BLOQUE 2: EVITAR RECARGA DE PÁGINA =====
+    // preventDefault() anula el comportamiento por defecto del navegador,
+    // que sería recargar la página al hacer submit; así el evento lo
+    // manejamos nosotros con JavaScript sin recargar.
     event.preventDefault();
 
+    // ===== BLOQUE 3: OBTENER VALORES DEL FORMULARIO =====
+    // Leemos el valor de cada campo del formulario y con .trim()
+    // quitamos los espacios en blanco de los extremos.
     const title = taskTitle.value.trim();
     const description = taskDesc.value.trim();
     const status = taskStatus.value;
+    // getEditingTaskId() devuelve el id de la tarea en edición:
+    // si es null  => estamos creando una tarea nueva.
+    // si tiene id => estamos actualizando una tarea existente.
     const editingId = getEditingTaskId();
+    // getSelectedUserIds() lee del estado interno (userSelectUI.js)
+    // los usuarios que se marcaron para asignar a la tarea.
+    const selectedUserIds = getSelectedUserIds();
 
+    // ===== BLOQUE 4: LIMPIAR MENSAJES DE ERROR =====
+    // Limpia los textos de error de la validación anterior
+    // para que no queden mensajes acumulados en pantalla.
     setTextContent(titleError, "");
     setTextContent(descError, "");
     setTextContent(statusError, "");
     setTextContent(usersError, "");
 
+    // ===== BLOQUE 5: VALIDACIÓN DE CAMPOS =====
+    // isValidInput() devuelve true solo si el valor no está vacío.
+    // Si falta un dato: muestra el error debajo del input,
+    // lanza una notificación (toast) y se detiene con return.
     if (!isValidInput(title)) {
         setTextContent(titleError, "Debe ingresar un título");
         showErrorMessage("Debe ingresar un título");
@@ -251,15 +276,21 @@ taskForm.addEventListener("submit", async (event) => {
         return;
     }
 
-    const selectedUserIds = getSelectedUserIds();
-
+    // ===== BLOQUE 6: VALIDAR USUARIOS ASIGNADOS =====
+    // Verifica que haya al menos un usuario asignado a la tarea.
     if (!selectedUserIds.length) {
         setTextContent(usersError, "Debe seleccionar al menos un usuario");
         showErrorMessage("Debe seleccionar al menos un usuario");
         return;
     }
 
+    // ===== BLOQUE 7: PETICIÓN (MODO EDICIÓN O CREACIÓN) =====
+    // Dentro del try se revisa si es modo edición o modo creación.
     try {
+        // ---- MODO EDICIÓN ----
+        // Si editingId tiene un valor, la tarea ya existe y se actualiza.
+        // Se le pasa el ID (primer parámetro) y el resto de los datos
+        // (segundo parámetro): title, description, status y userIds.
         if (editingId) {
             await updateTaskWithAssignments(editingId, {
                 userIds: selectedUserIds,
@@ -268,16 +299,26 @@ taskForm.addEventListener("submit", async (event) => {
                 status,
             });
 
+            // ---- CUANDO TERMINA LA PETICIÓN ----
+            // 1) Se limpia el id de edición para salir del modo edición.
             setEditingTaskId(null);
+            // 2) Se resetea el formulario para dejar los inputs limpios.
             taskForm.reset();
+            // 3) Se limpian los chips de usuarios asignados.
             clearSelectedUsers();
+            // 4) Se restaura el texto del botón a "Guardar Tarea".
             setTextContent(
                 taskForm.querySelector('button[type="submit"]'),
                 "Guardar Tarea",
             );
+            // 5) Se muestra una notificación de éxito.
             showMessage("Tarea actualizada correctamente");
+            // 6) Se vuelven a cargar las tareas para refrescar la tabla.
             allTasks = await loadAllTasks();
         } else {
+            // ---- MODO CREACIÓN ----
+            // Si no hay id en edición, se crea una tarea nueva
+            // con los datos del formulario y los usuarios asignados.
             await createTaskWithAssignments({
                 userIds: selectedUserIds,
                 title,
@@ -285,12 +326,17 @@ taskForm.addEventListener("submit", async (event) => {
                 status,
             });
 
+            // Se limpia el formulario, los usuarios asignados,
+            // se notifica el éxito y se recargan las tareas.
             taskForm.reset();
             clearSelectedUsers();
             showMessage("Tarea registrada correctamente");
             allTasks = await loadAllTasks();
         }
     } catch (error) {
+        // ===== BLOQUE 8: MANEJO DE ERRORES =====
+        // Si la petición falla, se muestra el mensaje de error
+        // del servidor mediante una notificación.
         showErrorMessage(error.message);
     }
 });

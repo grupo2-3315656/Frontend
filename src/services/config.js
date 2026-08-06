@@ -21,12 +21,22 @@ export const resetTasks = () => {
     totalTasks = 0;
 };
 
+// ===== ESTADO DE EDICIÓN DE TAREA =====
+// Variable que guarda el id de la tarea que se está editando.
+// Si es null  => el formulario queda en modo "crear".
+// Si tiene id => el formulario queda en modo "editar".
 let editingTaskId = null;
 export const getEditingTaskId = () => editingTaskId;
 export const setEditingTaskId = (id) => {
     editingTaskId = id;
 };
 
+// ===== REFERENCIAS A ELEMENTOS DEL FORMULARIO DE TAREAS =====
+// Cada export es una referencia directa a un elemento del HTML
+// (obtenida con document.getElementById). Por ejemplo:
+// taskForm es el <form id="task-form">, taskTitle el input
+// del título, taskStatus el select del estado, tasksTable el
+// contenedor donde se dibujan las tarjetas, etc.
 export const userDocInput = document.getElementById("user-doc");
 export const btnSearch = document.getElementById("btn-search");
 export const searchError = document.getElementById("search-error");

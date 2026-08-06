@@ -1,6 +1,10 @@
 import { usersApi } from "../api/usersApi.js";
 import { taskUsers, selectedUsersContainer } from "../services/config.js";
 
+// ===== SELECCIÓN DE USUARIOS ASIGNADOS =====
+// Estado interno con los usuarios marcados para asignar a la tarea.
+// selectedUsers guarda los objetos { id, name } seleccionados, y los
+// chips visibles se actualizan con updateSelectedUsers().
 let selectedUsers = [];
 let loaded = false;
 
@@ -18,18 +22,23 @@ const loadUsers = async () => {
     }
 };
 
+// Devuelve solo los ids de los usuarios seleccionados.
 export const getSelectedUserIds = () => selectedUsers.map(u => u.id);
 
+// Vacía la lista de seleccionados y refresca los chips.
 export const clearSelectedUsers = () => {
     selectedUsers = [];
     updateSelectedUsers();
 };
 
+// Precarga la selección (se usa al editar para marcar los usuarios
+// que ya estaban asignados a la tarea).
 export const setSelectedUsers = (users) => {
     selectedUsers = users.map(u => ({ id: u.id, name: u.name }));
     updateSelectedUsers();
 };
 
+// Redibuja los chips de usuarios seleccionados en el contenedor.
 const updateSelectedUsers = () => {
     selectedUsersContainer.innerHTML = selectedUsers.map(u =>
         `<span class="user-chip" data-initial="${u.name.charAt(0).toUpperCase()}">

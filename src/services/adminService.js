@@ -9,6 +9,10 @@ import { filterAdminTasks } from "./filterService.js";
 import { renderAdminTasks } from "../ui/adminTasksTable.js";
 import { showErrorMessage } from "../ui/notifications.js";
 
+// ===== OBTENER TAREAS CON SUS USUARIOS =====
+// Hace las 3 peticiones en paralelo (Promise.all): tareas,
+// asignaciones y usuarios, y une cada tarea con los usuarios
+// asignados para poder mostrarlos en la tabla.
 export const getAllTasksWithUsers = async () => {
     const [tasks, assignments, users] = await Promise.all([
         tasksApi.get(),
@@ -20,11 +24,14 @@ export const getAllTasksWithUsers = async () => {
     const assignmentsArray = Array.isArray(assignments) ? assignments : [];
     const usersArray = Array.isArray(users) ? users : [];
 
+    // Mapa de usuarios por id para buscarlos rápidamente.
     const usersMap = {};
     usersArray.forEach((u) => {
         usersMap[u.id] = u;
     });
 
+    // A cada tarea le agrega la propiedad assignedUsers
+    // con los usuarios que le fueron asignados.
     const tasksWithUsers = tasksArray.map((task) => {
         const taskAssignments = assignmentsArray.filter(
             (a) => a.taskId == task.id || a.task_id == task.id,

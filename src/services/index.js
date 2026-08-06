@@ -1,3 +1,12 @@
+// ===== BARREL SERVICE =====
+// Ctrl+Enter aquí -> buscar dónde vive cada función:
+//   taskService.js     -> createTask, createTaskWithAssignments, updateTask, updateTaskWithAssignments, deleteTask
+//   renderService.js   -> renderFilteredTasks, loadAllTasks
+//   adminService.js    -> getAllTasksWithUsers, loadAdminTasks, renderFilteredAdminTasks
+//   userService.js     -> searchUser, loadUsers, handleEditUser, handleDeleteUser
+//   filterService.js   -> filterTasksList, filterAdminTasks
+//   taskOrderService.js-> sortTasks
+//   viewService.js     -> switchView
 export { searchUser, loadUsers, handleEditUser, handleDeleteUser } from "./userService.js";
 export { createTask, createTaskWithAssignments, updateTask, updateTaskWithAssignments, deleteTask } from "./taskService.js";
 export { filterTasksList, filterAdminTasks } from "./filterService.js";
