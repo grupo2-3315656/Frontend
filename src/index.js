@@ -1,8 +1,10 @@
 // // =======================================================
 // // BARREL FILE - EXPORTA TODOS LOS MÓDULOS
 // // =======================================================
-// Al hacer Ctrl+Enter sobre un import en app.js se llega primero
-// a este archivo. Cada export re-exporta desde otro archivo real:
+// Ojo: al hacer Ctrl+Enter sobre un import en app.js se llega primero a
+// este archivo (y a los index.js de cada carpeta). Es un "re-export":
+// aquí no hay lógica, solo pasamos lo que exportan otros archivos.
+// Para encontrar la función real hay que seguir hasta:
 //   services/config.js  -> apiUrl, taskForm, getEditingTaskId, etc.
 //   services/index.js   -> loadAllTasks, updateTaskWithAssignments, etc.
 //   ui/index.js         -> showMessage, clearTasks, setTextContent, etc.

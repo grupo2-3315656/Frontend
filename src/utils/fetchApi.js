@@ -1,33 +1,34 @@
-// ===== CAPA HTTP (fetchApi) =====
-// Función genérica que usan todas las APIs para hacer peticiones
-// al backend. Recibe la URL y las opciones (method, headers, body).
+// Esta es la "mensajera" del proyecto: todas las APIs la usan para
+// hablar con el backend. Recibe la URL a la que llamar y las opciones
+// (método, headers, body), hace el fetch y devuelve los datos, o
+// lanza un error si algo sale mal.
 export const fetchApi = async (url, options = {}) => {
     let response;
 
     try {
-        // Intenta conectarse con el servidor con fetch.
+        // Intentamos conectarnos con el servidor.
         response = await fetch(url, options);
     } catch {
-        // Si el servidor no responde (red caída / API apagada),
-        // lanza un error genérico.
+        // Si el servidor no responde (API apagada, red caída),
+        // tiramos un error genérico para avisar al usuario.
         throw new Error("Servicio no disponible");
     }
 
-    // Si la respuesta es satisfactoria (2xx), devuelve los datos en JSON.
+    // Respuesta sin problemas (2xx): devolvemos los datos en JSON.
     if (response.ok) {
         const data = await response.json();
         return data;
     }
 
-    // Si el servidor devolvió un error (ej: 404, 500):
-    // intenta leer el mensaje de error del cuerpo de la respuesta.
+    // Si llegó acá es que el servidor respondió con un error
+    // (ej: 404, 500). Intentamos leer el mensaje del cuerpo...
     let message = `Error (Código: ${response.status})`;
     try {
         const body = await response.json();
         if (body?.error) message = body.error;
     } catch {}
 
-    // Crea el error, le guarda el status HTTP y lo lanza
+    // ...lo convertimos en un Error (con su status HTTP) y lo lanzamos,
     // para que el catch del flujo lo muestre en pantalla.
     const error = new Error(message);
     error.status = response.status;

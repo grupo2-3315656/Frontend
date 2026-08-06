@@ -45,11 +45,11 @@ const dismiss = (toast) => {
     toast.addEventListener("animationend", () => toast.remove(), { once: true });
 };
 
-// ===== NOTIFICACIONES (TOASTS) =====
-// Muestran un mensaje flotante que desaparece solo después de 1 segundo.
-// - showMessage       -> notificación de éxito (✅).
-// - showErrorMessage  -> notificación de error (❌).
-// - showInfoMessage   -> notificación informativa (ℹ️).
+// Son los "toasts": mensajes flotantes que aparecen arriba y
+// desaparecen solos al cabo de un segundo.
+// - showMessage      -> notificación de éxito (✅).
+// - showErrorMessage -> notificación de error (❌).
+// - showInfoMessage  -> notificación informativa (ℹ️).
 export const showMessage = (message) => notify(message, TYPE.SUCCESS);
 export const showErrorMessage = (message) => notify(message, TYPE.ERROR);
 export const showInfoMessage = (message) => notify(message, TYPE.INFO);

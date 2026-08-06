@@ -3,9 +3,9 @@ import { filterTasksList } from "./filterService.js";
 import { getAllTasksWithUsers } from "./adminService.js";
 import { taskCount, userTasksSection } from "./config.js";
 
-// ===== RENDERIZAR TAREAS FILTRADAS =====
-// Limpia la tabla, aplica los filtros activos (título/estado)
-// y dibuja cada tarea como una tarjeta en la tabla.
+// Esta función se encarga de pintar las tareas en la tabla:
+// primero la limpia, aplica los filtros que estén activos
+// (título y estado) y dibuja cada tarea como una tarjeta.
 export const renderFilteredTasks = (tasksToRender) => {
     clearTasks();
 
@@ -25,10 +25,9 @@ export const renderFilteredTasks = (tasksToRender) => {
     filteredTasks.forEach(addTaskToTable);
 };
 
-// ===== CARGAR TODAS LAS TAREAS =====
-// Busca todas las tareas junto con sus usuarios asignados,
-// actualiza el contador y vuelve a renderizar la tabla.
-// Se llama al final del crear/actualizar para refrescar la vista.
+// Recarga todas las tareas (junto con sus usuarios asignados),
+// actualiza el contador y vuelve a pintar la tabla. Es la que se
+// llama al final de crear/actualizar para ver el cambio al instante.
 export const loadAllTasks = async () => {
     try {
         const tasks = await getAllTasksWithUsers();

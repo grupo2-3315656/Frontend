@@ -1,10 +1,9 @@
 import { usersApi } from "../api/usersApi.js";
 import { taskUsers, selectedUsersContainer } from "../services/config.js";
 
-// ===== SELECCIÓN DE USUARIOS ASIGNADOS =====
-// Estado interno con los usuarios marcados para asignar a la tarea.
-// selectedUsers guarda los objetos { id, name } seleccionados, y los
-// chips visibles se actualizan con updateSelectedUsers().
+// Acá se controla a qué usuarios se le asigna la tarea. selectedUsers
+// guarda en memoria los elegidos ({ id, name }) y updateSelectedUsers()
+// dibuja los chips con esos nombres debajo del select.
 let selectedUsers = [];
 let loaded = false;
 
@@ -22,23 +21,24 @@ const loadUsers = async () => {
     }
 };
 
-// Devuelve solo los ids de los usuarios seleccionados.
+// Devuelve solo los ids de los usuarios seleccionados (lo que se
+// manda al backend para las asignaciones).
 export const getSelectedUserIds = () => selectedUsers.map(u => u.id);
 
-// Vacía la lista de seleccionados y refresca los chips.
+// Vacía la selección y vuelve a dibujar (quedan cero chips).
 export const clearSelectedUsers = () => {
     selectedUsers = [];
     updateSelectedUsers();
 };
 
-// Precarga la selección (se usa al editar para marcar los usuarios
-// que ya estaban asignados a la tarea).
+// Precarga los usuarios seleccionados: al editar, se llama con los
+// usuarios que ya estaban asignados para que aparezcan en los chips.
 export const setSelectedUsers = (users) => {
     selectedUsers = users.map(u => ({ id: u.id, name: u.name }));
     updateSelectedUsers();
 };
 
-// Redibuja los chips de usuarios seleccionados en el contenedor.
+// Redibuja los chips de los usuarios seleccionados.
 const updateSelectedUsers = () => {
     selectedUsersContainer.innerHTML = selectedUsers.map(u =>
         `<span class="user-chip" data-initial="${u.name.charAt(0).toUpperCase()}">
@@ -50,6 +50,8 @@ const updateSelectedUsers = () => {
 
 taskUsers.addEventListener("focus", loadUsers);
 
+// Al elegir una opción en el select, se agrega ese usuario a la
+// selección (si no estaba ya) y se deja el select en blanco.
 taskUsers.addEventListener("change", () => {
     const option = taskUsers.selectedOptions[0];
     if (!option || !option.value) return;
@@ -62,6 +64,7 @@ taskUsers.addEventListener("change", () => {
     updateSelectedUsers();
 });
 
+// Si se hace clic en la X de un chip, ese usuario se quita de la selección.
 selectedUsersContainer.addEventListener("click", (e) => {
     const btn = e.target.closest(".user-chip__remove");
     if (!btn) return;

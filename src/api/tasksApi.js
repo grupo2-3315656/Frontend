@@ -1,45 +1,44 @@
 import { apiUrl } from "../services/config.js";
 import { fetchApi } from "../utils/fetchApi.js";
 
-// ===== CAPA API - TAREAS =====
-// Aquí se definen las peticiones HTTP contra el backend.
-// url = "http://localhost:3000/api/tasks" (base del endpoint).
+// Estas son las peticiones HTTP que le mandamos al backend para las
+// tareas. url queda como "http://localhost:3000/api/tasks" y a partir
+// de ahí armamos cada endpoint.
 let url = `${apiUrl}/tasks`;
 
 export const tasksApi = {
     get: async () => {
-        // GET a /tasks -> obtiene todas las tareas.
+        // Pide todas las tareas (GET a /tasks).
         return await fetchApi(url);
     },
     getById: async (id) => {
-        // GET a /tasks/{id} -> obtiene una tarea por su id.
+        // Pide una sola tarea por su id (GET a /tasks/{id}).
         return await fetchApi(`${url}/${id}`);
     },
     create: async (taskData) => {
-        // POST a /tasks -> crea una tarea enviando los datos en JSON.
+        // Crea una tarea nueva: POST a /tasks y le manda los datos
+        // como JSON en el cuerpo de la petición.
         return await fetchApi(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(taskData),
         });
     },
-    // ===== ACTUALIZAR TAREA (update) =====
-    // Recibe dos parámetros:
-    //   id       -> el id de la tarea que se va a actualizar.
-    //   taskData -> el cuerpo con los datos actualizados de la tarea.
-    // Hace una petición PATCH al endpoint /tasks/{id} y envía el
-    // cuerpo como JSON (JSON.stringify convierte el objeto a texto).
+    // Actualizar una tarea. Recibe dos cosas:
+    // - id: el id de la tarea que se quiere tocar.
+    // - taskData: el cuerpo con los datos ya actualizados.
+    // Y haca una petición PATCH al endpoint /tasks/{id} mandándole
+    // el cuerpo convertido a JSON. Hasta acá llega el frontend:
+    // el PATCH pasa al backend y ese flujo lo explica otro compañero.
     update: async (id, taskData) => {
         return await fetchApi(`${url}/${id}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(taskData),
         });
-        // AQUÍ TERMINA EL FRONTEND: el PATCH llega al backend y
-        // el flujo de actualización lo explica el siguiente compañero.
     },
     delete: async (id) => {
-        // DELETE a /tasks/{id} -> elimina una tarea por su id.
+        // Borra una tarea (DELETE a /tasks/{id}).
         return await fetchApi(`${url}/${id}`, {
             method: "DELETE",
         });

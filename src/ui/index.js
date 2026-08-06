@@ -1,5 +1,5 @@
-// ===== BARREL UI =====
-// Ctrl+Enter aquí -> archivo real:
+// Re-export de las funciones de interfaz (UI). Si Ctrl+Enter te trae
+// acá, esto es solo el "puente"; la función real vive en:
 //   showMessage / showErrorMessage / showInfoMessage -> notifications.js
 //   getSelectedUserIds / clearSelectedUsers / setSelectedUsers -> userSelectUI.js
 //   setTextContent -> setTextContent.js | setInnerHtml -> setInnerHtml.js

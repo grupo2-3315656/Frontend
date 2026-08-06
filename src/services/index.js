@@ -1,5 +1,5 @@
-// ===== BARREL SERVICE =====
-// Ctrl+Enter aquí -> buscar dónde vive cada función:
+// Re-export de todos los services. Si Ctrl+Enter te trae hasta aquí,
+// buscá dónde vive cada función:
 //   taskService.js     -> createTask, createTaskWithAssignments, updateTask, updateTaskWithAssignments, deleteTask
 //   renderService.js   -> renderFilteredTasks, loadAllTasks
 //   adminService.js    -> getAllTasksWithUsers, loadAdminTasks, renderFilteredAdminTasks
